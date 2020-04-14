@@ -1,2 +1,3 @@
-# mealodex
-Recipe organizer that will eventually support meal planning and grocery list generation
+# The Mealodex
+
+The Mealodex is currently in the very early stages, but will eventually be a recipe organizer that will support meal planning and grocery list generation.
