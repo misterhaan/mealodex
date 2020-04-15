@@ -1,0 +1,37 @@
+// mealodex.scss contains general styles for all of the Mealodex.
+
+@import "!base";
+
+body {
+	padding: 0;
+	margin: 0;
+	-moz-text-size-adjust: none;
+	-webkit-text-size-adjust: 100%;
+	font-family: Lato;
+	font-size: 1.25em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-size: 1.1em;
+	font-family: Montserrat;
+	font-weight: normal;
+	margin: 20px 10px 5px;
+}
+h1 {
+	margin: 5px 10px;
+}
+
+p {
+	margin: 10px 20px;
+}
+
+.loading:before,
+.working:after {
+	@include fa-label;
+	content: "\f110";
+	-webkit-animation: fa-spin 1s infinite steps(8);
+	animation: fa-spin 1s infinite steps(8);
+}
+
+@import "!titlebar";
+@import "!statusbar";

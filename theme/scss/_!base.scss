@@ -1,0 +1,109 @@
+// variables, extensions, mixins, font definitions, and keyframes for the Mealodex
+
+$red: #c42;
+$orange: #e62;
+$yellow: #fb3;
+$green: #6b4;
+$blue: #48c;
+$purple: #72a;
+
+$white: #eef;
+$black: #000;
+
+$ltgrey: #bbc;
+$medgrey: #667;
+$dkgrey: #445;
+
+$gentlecorner: 3px;
+
+@font-face {
+	font-family: Lato;
+	font-style: normal;
+	font-weight: normal;
+	src: local('Lato'), local('Lato-Regular'), url(Lato-Regular.woff2) format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+	font-family: Montserrat;
+	font-style: normal;
+	font-weight: normal;
+	src: local('Montserrat'), local('Montserrat-Regular'), url(Montserrat-Regular.woff2) format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+	font-family: Fontawesome;
+	src: url(fontawesome-webfont.woff);
+}
+
+@-webkit-keyframes fa-spin {
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	100% {
+		-webkit-transform: rotate(359deg);
+		transform: rotate(359deg);
+	}
+}
+@keyframes fa-spin {
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	100% {
+		-webkit-transform: rotate(359deg);
+		transform: rotate(359deg);
+	}
+}
+
+@mixin fontawesome {
+	font-family: Fontawesome;
+	display: inline-block;
+	font-weight: normal;
+}
+@mixin fa-label {
+	@include fontawesome;
+	font-size: .9em;
+	color: $dkgrey;
+	margin-right: 5px;
+}
+@mixin fa-replaced {
+	span {
+		display: none;
+	}
+	&:before {
+		@include fontawesome;
+	}
+}
+
+
+@mixin flex-container {
+	display: -webkit-flex;
+	display: flex;
+}
+@mixin flex-container-center {
+	@include flex-container;
+	-webkit-align-items: center;
+	align-items: center;
+}
+@mixin flex-container-baseline {
+	@include flex-container;
+	-webkit-align-items: baseline;
+	align-items: baseline;
+}
+@mixin flex-container-vertical {
+	@include flex-container;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+}
+
+@mixin flex-item-fixed {
+	-webkit-flex: 0 0 auto;
+	flex: 0 0 auto;
+}
+@mixin flex-item-fill {
+	-webkit-flex: 1 1 auto;
+	flex: 1 1 auto;
+}

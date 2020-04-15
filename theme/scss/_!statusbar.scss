@@ -1,0 +1,11 @@
+// Status bar styles for the Mealodex
+#mealodex > footer {
+	@include flex-container;
+	margin: auto 8px 4px;
+	padding-top: 16px;
+	font-size: .8em;
+}
+
+#copyright {
+	margin-left: auto;
+}
