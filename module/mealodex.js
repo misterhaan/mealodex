@@ -5,6 +5,9 @@ import StatusBar from "./component/statusbar.js";
 
 new Vue({
 	el: "#mealodex",
+	data: {
+		error: false
+	},
 	components: {
 		titlebar: TitleBar,
 		statusbar: StatusBar
@@ -12,7 +15,7 @@ new Vue({
 	template: /*html*/ `
 		<div id=mealodex>
 			<titlebar :title="'${AppName.Full}'"></titlebar>
-			<statusbar></statusbar>
+			<statusbar :last-error=error></statusbar>
 		</div>
 `
 });
