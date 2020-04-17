@@ -1,0 +1,87 @@
+// form styles for the Mealodex
+
+input, button {
+	font-family: inherit;
+	font-size: 1em;
+}
+input:not([type]),  // default type is text
+input[type=text],
+input[type=password] {
+	padding: 1px 5px 0;
+	border-width: 0 0 1px 0;
+	border-color: $medgrey;
+	&:focus {
+		border: none;
+		padding-bottom: 1px;
+		margin-bottom: 0;
+		background-color: $ltgrey;
+		border-radius: $gentlecorner;
+	}
+}
+
+.singlelinefields label {
+	@include flex-container-baseline;
+	margin: 5px 20px;
+	input {
+		@include flex-item-fill;
+	}
+	button {
+		@include fa-replaced;
+		color: $dkgrey;
+		padding: 0;
+		border: none;
+		background: transparent;
+		margin: 0 5px;
+		width: 25px;
+		height: 25px;
+		text-align: center;
+		cursor: pointer;
+		&:last-child {
+			margin-right: 0;
+		}
+		&:hover {
+			color: $blue;
+		}
+		&:focus {
+			background-color: $ltgrey;
+			border-radius: $gentlecorner;
+		}
+		&::-moz-focus-inner {  // hide dotted line focus border in firefox
+			border: 0;
+		}
+	}
+}
+
+.calltoaction {
+	text-align: center;
+	a,
+	button {
+		display: inline-block;
+		white-space: nowrap;
+		text-decoration: none;
+		border-radius: $gentlecorner;
+		background-color: $ltgrey;
+		color: $black;
+		border: none;
+		padding: 5px 15px;
+		margin: 10px;
+		cursor: pointer;
+		&:focus,
+		&:hover {
+			background-color: $blue;
+			color: $white;
+		}
+		&:disabled {
+			--sqrt2: 1.4142135623730950488016887242097;
+			background: repeating-linear-gradient(
+				45deg,
+				$ltgrey,
+				$ltgrey calc(3px / var(--sqrt2)),
+				transparent calc(3px / var(--sqrt2)),
+				transparent calc(6px / var(--sqrt2))
+			);
+			color: $medgrey;
+			cursor: default;
+		}
+	}
+}
