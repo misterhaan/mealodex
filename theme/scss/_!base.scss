@@ -8,9 +8,9 @@ $blue: #48c;
 $purple: #72a;
 
 $white: #eef;
-$black: #000;
+$black: #001;
 
-$ltgrey: #bbc;
+$ltgrey: #dde;
 $medgrey: #667;
 $dkgrey: #445;
 
@@ -99,9 +99,9 @@ $gentlecorner: 3px;
 	flex-direction: column;
 }
 
-@mixin flex-item-fixed {
-	-webkit-flex: 0 0 auto;
-	flex: 0 0 auto;
+@mixin flex-item-fixed($basis: auto) {
+	-webkit-flex: 0 0 $basis;
+	flex: 0 0 $basis;
 }
 @mixin flex-item-fill {
 	-webkit-flex: 1 1 auto;

@@ -32,6 +32,10 @@ p {
 	-webkit-animation: fa-spin 1s infinite steps(8);
 	animation: fa-spin 1s infinite steps(8);
 }
+.working:after {
+	margin-right: 0;
+	margin-left: 5px;
+}
 
 @import "!titlebar";
 @import "!statusbar";
