@@ -281,7 +281,7 @@ grant all on \`{{stepData.name}}\`.* to '{{stepData.user}}'@'localhost' identifi
 				<ol class=stepsTaken v-if=stepsTaken.length v-for="step in stepsTaken">
 					<li>{{step}}</li>
 				</ol>
-				<component :is=progress.component :step-data=stepData @set-level="level = $event.level; stepsData = $event.stepData" @log-step="stepsTaken.push($event)" @error="error = $event"></component>
+				<component :is=progress.component :step-data=stepData @set-level="level = $event.level; stepData = $event.stepData" @log-step="stepsTaken.push($event)" @error="error = $event"></component>
 			</main>
 			<statusbar :last-error=error></statusbar>
 		</div>
