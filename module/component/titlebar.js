@@ -1,11 +1,10 @@
+import AppName from "../appName.js";
+
 export default {
-	props: [
-		"title"
-	],
 	template: /*html*/ `
 		<header id=titlebar>
 			<img id=favicon src=favicon.svg alt="">
-			<h2 id=sitetitle>{{title}}</h2>
+			<h2 id=sitetitle>${AppName.Full}</h2>
 		</header>
 `
 }

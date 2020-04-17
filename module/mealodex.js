@@ -23,7 +23,7 @@ new Vue({
 					if(this.subView)
 						title = this.subView.Title + " - " + title;
 					else
-						for(let v in val.SubViews)
+						for(const v in val.SubViews)
 							if(val.SubViews[v].Name == val.DefaultSubViewName) {
 								title = val.SubViews[v].Title + " - " + title;
 								break;
@@ -93,7 +93,7 @@ new Vue({
 	},
 	template: /*html*/ `
 		<div id=mealodex>
-			<titlebar :title="'${AppName.Full}'"></titlebar>
+			<titlebar></titlebar>
 			<component :is=view.Name :view=subView :params=params @error="error = $event"></component>
 			<statusbar :last-error=error></statusbar>
 		</div>
