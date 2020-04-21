@@ -3,19 +3,19 @@
  * Version information for the Mealodex
  * @author misterhaan
  */
-class mdVersion {
+class Version {
 	/**
 	 * Database structure (tables and routines) version.  Changing this triggers
 	 * the setup script in upgrade mode.
 	 * @var integer
 	 */
-	const Structure = mdStructureVersion::Empty;
+	const Structure = StructureVersion::Empty;
 	/**
 	 * Database data (rows) version.  Changing this triggers the setup script in
 	 * update mode.
 	 * @var integer
 	 */
-	const Data = mdDataVersion::Empty;
+	const Data = DataVersion::Empty;
 }
 
 /**
@@ -24,7 +24,7 @@ class mdVersion {
  * InstallDatabase() and UpgradeDatabaseStructure() in setup.php.
  * @author misterhaan
  */
-class mdStructureVersion {
+class StructureVersion {
 	const Recipes = 1;
 	const Empty = 0;
 }
@@ -35,6 +35,6 @@ class mdStructureVersion {
  * UpgradeDatabaseData() in setup.php.
  * @author misterhaan
  */
-class mdDataVersion {
+class DataVersion {
 	const Empty = 0;
 }

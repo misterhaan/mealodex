@@ -1,11 +1,11 @@
 <?php
-require_once dirname(__DIR__) . '/etc/class/mealodex.php';
+require_once dirname(__DIR__) . '/etc/class/api.php';
 
 /**
  * Handler for item API requests.
  * @author misterhaan
  */
-class ItemApi extends mdApi {
+class ItemApi extends Api {
 	/**
 	 * Look up an item row based on its ID.
 	 * @param int $id ID of item row to look up

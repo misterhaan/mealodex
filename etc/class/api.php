@@ -1,12 +1,26 @@
 <?php
+require_once 'version.php';
+
+// CONTEXT_DOCUMENT_ROOT is set when an alias or similar is used, which makes
+// DOCUMENT_ROOT incorrect for this purpose.  assume the presence of an alias
+// means we're one level deep.
+define('DOCROOT', isset($_SERVER['CONTEXT_PREFIX']) && isset($_SERVER['CONTEXT_DOCUMENT_ROOT']) && $_SERVER['CONTEXT_PREFIX']
+	? dirname($_SERVER['CONTEXT_DOCUMENT_ROOT'])
+	: $_SERVER['DOCUMENT_ROOT']
+);
+
+// PHP should treat strings as UTF8
+ini_set('default_charset', 'UTF-8');
+mb_internal_encoding('UTF-8');
+
 /**
  * Base class for API controllers.  Requests are formed as
- * [controller]/[endpoint] with optional parameters separated by / after the
- * endpoind, and served by a function named [method]_[endpoint] in the mdApi
+ * [controller]/[endpoint] with any required parameters separated by / after
+ * the endpoint, and served by a function named [method]_[endpoint] in the Api
  * class in [controller].php.
  * @author misterhaan
  */
-abstract class mdApi {
+abstract class Api {
 	/**
 	 * Respond to an API request or show API documentation.
 	 */
@@ -34,7 +48,7 @@ abstract class mdApi {
 	 */
 	protected static function RequireDatabase() {
 		if(@include_once dirname(DOCROOT) . '/.mdKeys.php') {
-			$db = @new mysqli(mdKeysDB::HOST, mdKeysDB::USER, mdKeysDB::PASS, mdKeysDB::NAME);
+			$db = @new mysqli(KeysDB::HOST, KeysDB::USER, KeysDB::PASS, KeysDB::NAME);
 			if(!$db->connect_errno) {
 				// it's probably okay to keep going if we can't set the character set
 				$db->real_query('set names \'utf8mb4\'');
@@ -74,7 +88,7 @@ abstract class mdApi {
 	 */
 	protected static function RequireLatestDatabase() {
 		$db = self::RequireDatabaseWithConfig();
-		if($db->config->structureVersion >= mdVersion::Structure && $db->config->dataVersion >= mdVersion::Data)
+		if($db->config->structureVersion >= Version::Structure && $db->config->dataVersion >= Version::Data)
 			return $db;
 		else
 			self::NeedSetup('Database upgrade required.');

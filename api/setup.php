@@ -1,11 +1,11 @@
 <?php
-require_once dirname(__DIR__) . '/etc/class/mealodex.php';
+require_once dirname(__DIR__) . '/etc/class/api.php';
 
 /**
  * Handler for setup API requests.
  * @author misterhaan
  */
-class SetupApi extends mdApi {
+class SetupApi extends Api {
 	/**
 	 * Get the current setup level.
 	 */
@@ -15,18 +15,18 @@ class SetupApi extends mdApi {
 			$result->stepData = "File not found";
 		else {
 			require_once(dirname(DOCROOT) . '/.mdKeys.php');
-			if(!class_exists("mdKeysDB"))
+			if(!class_exists("KeysDB"))
 				$result->stepData = "Class not defined";
-			elseif(!defined("mdKeysDB::HOST") || !defined("mdKeysDB::NAME") || !defined("mdKeysDB::USER") || !defined("mdKeysDB::PASS"))
+			elseif(!defined("KeysDB::HOST") || !defined("KeysDB::NAME") || !defined("KeysDB::USER") || !defined("KeysDB::PASS"))
 				$result->stepData = "Class incomplete";
 			else {
 				$result->level = -3;
-				$db = @new mysqli(mdKeysDB::HOST, mdKeysDB::USER, mdKeysDB::PASS, mdKeysDB::NAME);
+				$db = @new mysqli(KeysDB::HOST, KeysDB::USER, KeysDB::PASS, KeysDB::NAME);
 				if(!$db || $db->connect_errno)
 					$result->stepData = [
-						"name" => mdKeysDB::NAME,
-						"user" => mdKeysDB::USER,
-						"pass" => mdKeysDB::PASS,
+						"name" => KeysDB::NAME,
+						"user" => KeysDB::USER,
+						"pass" => KeysDB::PASS,
 						"error" => $db->connect_errno . ' ' . $db->connect_error
 					];
 				else {
@@ -36,10 +36,10 @@ class SetupApi extends mdApi {
 						$result->stepData = $db->errno . ' ' . $db->error;
 					else {
 						$result->level = -1;
-						if($config->structureVersion < mdVersion::Structure || $config->dataVersion < mdVersion::Data)
+						if($config->structureVersion < Version::Structure || $config->dataVersion < Version::Data)
 							$result->stepData = [
-								"structureBehind" => mdVersion::Structure - $config->structureVersion,
-								"dataBehind" => mdVersion::Data - $config->dataVersion
+								"structureBehind" => Version::Structure - $config->structureVersion,
+								"dataBehind" => Version::Data - $config->dataVersion
 							];
 						else
 							$result->level = 0;
@@ -65,7 +65,7 @@ class SetupApi extends mdApi {
 			&& ($name = trim($_POST['name'])) && ($user = trim($_POST['user'])) && ($pass = $_POST['pass'])) {
 			$path = dirname(DOCROOT) . '/.mdKeys.php';
 			$contents = '<?php
-class mdKeysDB {
+class KeysDB {
 	const HOST = \'' . addslashes($_POST['host']) . '\';
 	const NAME = \'' . addslashes($_POST['name']) . '\';
 	const USER = \'' . addslashes($_POST['user']) . '\';
@@ -94,7 +94,7 @@ class mdKeysDB {
 		foreach($files as $file)
 			self::RunQueryFile($file, $db);
 
-		if($db->real_query('insert into config (structureVersion) values (' . +mdVersion::Structure . ')')) {
+		if($db->real_query('insert into config (structureVersion) values (' . +Version::Structure . ')')) {
 			$db->commit();
 			self::Success();
 		} else
@@ -107,9 +107,9 @@ class mdKeysDB {
 	protected static function POST_upgradeDatabase() {
 		$db = self::RequireDatabaseWithConfig();
 		$db->autocommit(false);  // each step should commit only if the entire step succeeds
-		if($db->config->structureVersion < mdVersion::Structure)
+		if($db->config->structureVersion < Version::Structure)
 			self::UpgradeDatabaseStructure($db);
-		if($db->config->dataVersion < mdVersion::Data)
+		if($db->config->dataVersion < Version::Data)
 			self::UpgradeDatabaseData($db);
 		self::Success();
 	}
@@ -119,7 +119,7 @@ class mdKeysDB {
 	 * @param mysqli $db Database connection object.
 	 */
 	private static function UpgradeDatabaseStructure(mysqli $db) {
-		self::UpgradeDatabaseStructureStep(mdStructureVersion::Recipes, $db, 'tables/item');
+		self::UpgradeDatabaseStructureStep(StructureVersion::Recipes, $db, 'tables/item');
 		// add future structure upgrades here (older ones need to go first)
 	}
 
@@ -133,7 +133,7 @@ class mdKeysDB {
 
 	/**
 	 * Perform one step of a data structure upgrade.
-	 * @param int $ver Structure version upgrading to (use a constant from mdStructureVersion)
+	 * @param int $ver Structure version upgrading to (use a constant from StructureVersion)
 	 * @param mysqli $db Database connection object
 	 * @param string[] $queryfiles File subdirectory and name without extension for each query file to run
 	 */
@@ -171,7 +171,7 @@ class mdKeysDB {
 	/**
 	 * Sets the structure version to the provided value.  Use this after making
 	 * database structure upgrades.
-	 * @param int $ver Structure version to set (use a constant from mdStructureVersion)
+	 * @param int $ver Structure version to set (use a constant from StructureVersion)
 	 * @param mysqli $db Database connection object
 	 */
 	private static function SetStructureVersion(int $ver, mysqli $db) {

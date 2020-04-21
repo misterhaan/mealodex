@@ -4,7 +4,7 @@
  * document root, name .mdKeys.php, and fill in with access values.  this
  * obviously needs to be left blank on github to avoid sharing secrets.
  */
-class mdKeysDB {
+class KeysDB {
 	/**
 	 * hostname for database (often this is localhost)
 	 * @var string
