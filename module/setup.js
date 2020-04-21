@@ -59,7 +59,9 @@ new Vue({
 		SetupApi.Level().done(result => {
 			this.level = result.level;
 			this.stepData = result.stepData;
-		}).fail(this.Error);
+		}).fail(error => {
+			this.error = error;
+		});
 	},
 	components: {
 		titlebar: TitleBar,
@@ -271,7 +273,6 @@ grant all on \`{{stepData.name}}\`.* to '{{stepData.user}}'@'localhost' identifi
 			`
 		}
 	},
-	mixins: [ReportError],
 	template: /*html*/ `
 		<div id=mealodex>
 			<titlebar :hideSearch=true></titlebar>
