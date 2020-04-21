@@ -16,19 +16,20 @@ export default class ApiBase {
 			url: url,
 			data: data,
 			dataType: "json"
-		}).then(result => {
-			if(result.fail) {
-				if(result.redirect)
-					location = result.redirect;
-				throw new Error(result.message);
-			} else if(successTransform)
-				return successTransform(result);
-			else {  // default transform is to delete the fail property and return everything else
-				delete result.fail;
-				return result;
-			}
-		}, request => {
-			throw new Error(request.status + " " + request.statusText + " from " + url);
-		});
+		}).then(
+			result => successTransform ? successTransform(result) : result,
+			request => {
+				if(request.status == 503 && request.statusText == "Setup Needed" && !location.includes("setup.html"))
+					location = "setup.html";
+				const error = new Error(
+					request.getResponseHeader("Content-Type").split(";")[0] == "text/plain"
+						? request.responseText
+						: `${request.status} ${request.statusText} from ${url}`
+				);
+				error.url = url;
+				error.status = request.status;
+				error.statusText = request.statusText;
+				throw error;
+			});
 	}
 }

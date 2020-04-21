@@ -18,9 +18,6 @@ mb_internal_encoding('UTF-8');
  */
 function __autoload($class) {
 	switch($class) {
-		case 'mdAjax':
-			require_once 'mdAjax.php';
-			break;
 		case 'mdApi':
 			require_once 'mdApi.php';
 			break;
