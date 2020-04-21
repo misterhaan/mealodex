@@ -88,7 +88,7 @@ class mdKeysDB {
 		// tables, views, routines; then alphabetical order.  if anything has
 		// dependencies that come later, it comes after its last dependency.
 		$files = [
-			'tables/config'
+			'tables/config', 'tables/item'
 		];
 		$db->autocommit(false);  // no partial database installations
 		foreach($files as $file)
@@ -119,6 +119,7 @@ class mdKeysDB {
 	 * @param mysqli $db Database connection object.
 	 */
 	private static function UpgradeDatabaseStructure(mysqli $db) {
+		self::UpgradeDatabaseStructureStep(mdStructureVersion::Recipes, $db, 'tables/item');
 		// add future structure upgrades here (older ones need to go first)
 	}
 
@@ -131,9 +132,25 @@ class mdKeysDB {
 	}
 
 	/**
+	 * Perform one step of a data structure upgrade.
+	 * @param int $ver Structure version upgrading to (use a constant from mdStructureVersion)
+	 * @param mysqli $db Database connection object
+	 * @param string[] $queryfiles File subdirectory and name without extension for each query file to run
+	 */
+	private static function UpgradeDatabaseStructureStep(int $version, mysqli $db, string ...$queryfiles) {
+		if($db->config->structureVersion < $version) {
+			foreach($queryfiles as $file)
+				self::RunQueryFile($file, $db);
+
+			self::SetStructureVersion($version, $db);
+			$db->commit();
+		}
+	}
+
+	/**
 	 * Load a query from a file and run it.
-	 * @param string $filepath File subdirectory and name without extension.
-	 * @param mysqli $db Database connection object.
+	 * @param string $filepath File subdirectory and name without extension
+	 * @param mysqli $db Database connection object
 	 */
 	private static function RunQueryFile(string $filepath, mysqli $db) {
 		$sql = trim(file_get_contents(dirname(__DIR__) . '/etc/db/' . $filepath . '.sql'));
@@ -149,6 +166,19 @@ class mdKeysDB {
 		// if we haven't returned already, the query failed
 		list($type, $name) = explode('s/', $filepath);
 		self::DatabaseError("Error creating $name $type", $db);
+	}
+
+	/**
+	 * Sets the structure version to the provided value.  Use this after making
+	 * database structure upgrades.
+	 * @param int $ver Structure version to set (use a constant from mdStructureVersion)
+	 * @param mysqli $db Database connection object
+	 */
+	private static function SetStructureVersion(int $ver, mysqli $db) {
+		if($db->real_query('update config set structureVersion=' . +$ver . ' limit 1'))
+			$db->config->structureVersion = +$ver;
+		else
+			self::DatabaseError("Error setting structure version to $ver", $db);
 	}
 }
 SetupApi::Respond();

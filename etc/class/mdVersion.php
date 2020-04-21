@@ -25,6 +25,7 @@ class mdVersion {
  * @author misterhaan
  */
 class mdStructureVersion {
+	const Recipes = 1;
 	const Empty = 0;
 }
 
