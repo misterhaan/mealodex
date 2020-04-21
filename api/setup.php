@@ -94,9 +94,10 @@ class mdKeysDB {
 		foreach($files as $file)
 			self::RunQueryFile($file, $db);
 
-		if($db->real_query('insert into config (structureVersion) values (' . +mdVersion::Structure . ')'))
+		if($db->real_query('insert into config (structureVersion) values (' . +mdVersion::Structure . ')')) {
 			$db->commit();
-		else
+			self::Success();
+		} else
 			self::DatabaseError('Error initializing configuration', $db);
 	}
 
@@ -110,6 +111,7 @@ class mdKeysDB {
 			self::UpgradeDatabaseStructure($db);
 		if($db->config->dataVersion < mdVersion::Data)
 			self::UpgradeDatabaseData($db);
+		self::Success();
 	}
 
 	/**
