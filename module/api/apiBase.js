@@ -1,23 +1,59 @@
 import "../../external/jquery-3.4.1.min.js";
 
+/**
+ * Server API base class
+ */
 export default class ApiBase {
-	static GET(url, successTransform) {
-		return this.GETwithParams(url, {}, successTransform)
+	/**
+	 * Perform an HTTP GET request to retrieve information from the server.
+	 * @param {string} url - URL to request
+	 * @param {object} [data] - Request parameters to include in the query string
+	 */
+	static GET(url, data) {
+		return this.Ajax("GET", url, data)
 	}
-	static GETwithParams(url, data, successTransform) {
-		return this.Ajax("GET", url, data, successTransform)
+
+	/**
+	 * Perform an HTTP POST request to ask the server to do something.
+	 * @param {string} url - URL to request
+	 * @param {object} [data] - Named properties to send as POST data
+	 */
+	static POST(url, data) {
+		return this.Ajax("POST", url, data);
 	}
-	static POST(url, data, successTransform) {
-		return this.Ajax("POST", url, data || {}, successTransform);
+
+	/**
+	 * Perform an HTTP PATCH request to update a record on the server.
+	 * @param {string} url - URL to request
+	 * @param {object} [data] - Named properties to send as data in the request body
+	 */
+	static PATCH(url, data) {
+		return this.Ajax("PATCH", url, data);
 	}
-	static Ajax(method, url, data, successTransform) {
+
+	/**
+	 * Perform an HTTP PUT request to add or replace a record on the server.
+	 * @param {string} url - URL to request
+	 * @param {object} [data] - Named properties to send as data in the request body
+	 */
+	static PUT(url, data) {
+		return this.Ajax("PUT", url, data);
+	}
+
+	/**
+	 * Perform an HTTP request with some error handling.
+	 * @param {string} method - HTTP request method for the request
+	 * @param {string} url - URL to request
+	 * @param {object} [data] - Data to send with the request
+	 */
+	static Ajax(method, url, data = {}) {
 		return $.ajax({
 			method: method,
 			url: url,
 			data: data,
 			dataType: "json"
 		}).then(
-			result => successTransform ? successTransform(result) : result,
+			result => result,
 			request => {
 				if(request.status == 503 && request.statusText == "Setup Needed" && !location.includes("setup.html"))
 					location = "setup.html";
