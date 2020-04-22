@@ -88,7 +88,7 @@ class KeysDB {
 		// tables, views, routines; then alphabetical order.  if anything has
 		// dependencies that come later, it comes after its last dependency.
 		$files = [
-			'tables/config', 'tables/item', 'tables/prep'
+			'table/config', 'table/item', 'table/prep'
 		];
 		$db->autocommit(false);  // no partial database installations
 		foreach($files as $file)
@@ -120,7 +120,7 @@ class KeysDB {
 	 */
 	private static function UpgradeDatabaseStructure(mysqli $db) {
 		self::UpgradeDatabaseStructureStep(StructureVersion::Recipes, $db,
-			'tables/item', 'tables/prep'
+			'table/item', 'table/prep'
 		);
 		// add future structure upgrades here (older ones need to go first)
 	}
@@ -156,7 +156,7 @@ class KeysDB {
 	 */
 	private static function RunQueryFile(string $filepath, mysqli $db) {
 		$sql = trim(file_get_contents(dirname(__DIR__) . '/etc/db/' . $filepath . '.sql'));
-		if(substr($filepath, 0, 12) == 'transitions/') {  // transitions usually have more than one query
+		if(substr($filepath, 0, 12) == 'transition/') {  // transitions usually have more than one query
 			if($db->multi_query($sql)) {
 				while($db->next_result());  // these queries don't return results but we need to get past them to continue
 				return;
@@ -166,7 +166,7 @@ class KeysDB {
 				return;
 		}
 		// if we haven't returned already, the query failed
-		list($type, $name) = explode('s/', $filepath);
+		list($type, $name) = explode('/', $filepath);
 		self::DatabaseError("Error creating $name $type", $db);
 	}
 
