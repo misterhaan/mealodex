@@ -88,7 +88,7 @@ class KeysDB {
 		// tables, views, routines; then alphabetical order.  if anything has
 		// dependencies that come later, it comes after its last dependency.
 		$files = [
-			'tables/config', 'tables/item'
+			'tables/config', 'tables/item', 'tables/prep'
 		];
 		$db->autocommit(false);  // no partial database installations
 		foreach($files as $file)
@@ -119,7 +119,9 @@ class KeysDB {
 	 * @param mysqli $db Database connection object.
 	 */
 	private static function UpgradeDatabaseStructure(mysqli $db) {
-		self::UpgradeDatabaseStructureStep(StructureVersion::Recipes, $db, 'tables/item');
+		self::UpgradeDatabaseStructureStep(StructureVersion::Recipes, $db,
+			'tables/item', 'tables/prep'
+		);
 		// add future structure upgrades here (older ones need to go first)
 	}
 
