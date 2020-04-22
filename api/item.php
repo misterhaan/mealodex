@@ -10,7 +10,7 @@ class ItemApi extends Api {
 	 * Look up an item row based on its ID.
 	 * @param int $id ID of item row to look up
 	 * @param mysqli $db Database connection
-	 * @return mixed Item row with requested ID, or false if not found
+	 * @return object|bool Item row with requested ID, or false if not found
 	 */
 	public static function fromID(int $id, mysqli $db) {
 		if($getitem = $db->prepare('select name from item where id=? limit 1'))
@@ -37,7 +37,7 @@ class ItemApi extends Api {
 	 * Look up an item row based on its name.
 	 * @param string $name Name of item row to look up
 	 * @param mysqli $db Database connection
-	 * @return mixed Item row with requested name, or false if not found
+	 * @return object|bool Item row with requested name, or false if not found
 	 */
 	public static function fromName(string $name, mysqli $db) {
 		if($getitem = $db->prepare('select id, name from item where name=? limit 1'))
@@ -75,7 +75,7 @@ class ItemApi extends Api {
 
 	/**
 	 * Look up an item by ID.
-	 * @param array $params First item is the item ID
+	 * @param array $params First value is the item ID
 	 */
 	protected static function GET_id(array $params) {
 		if($id = trim(array_shift($params)))
@@ -94,7 +94,7 @@ class ItemApi extends Api {
 
 	/**
 	 * Look up an item by name.
-	 * @param array $params First item is the item name
+	 * @param array $params First value is the item name
 	 */
 	protected static function GET_name(array $params) {
 		if($name = trim(array_shift($params))) {
@@ -136,6 +136,7 @@ class ItemApi extends Api {
 
 	/**
 	 * Update one or more item properties.
+	 * @param array $params First value is the item id
 	 */
 	protected static function PATCH_id(array $params) {
 		// since there's only one property to update it's either all or nothing
@@ -144,6 +145,7 @@ class ItemApi extends Api {
 
 	/**
 	 * Replace an entire item.
+	 * @param array $params First value is the item id
 	 */
 	protected static function PUT_id(array $params) {
 		if($id = trim(array_shift($params)))

@@ -10,7 +10,7 @@ class PrepApi extends Api {
 	 * Look up a prep row based on its ID.
 	 * @param int $id ID of prep row to look up
 	 * @param mysqli $db Database connection
-	 * @return mixed Prep row with requested ID, or false if not found
+	 * @return object|bool Prep row with requested ID, or false if not found
 	 */
 	public static function fromID(int $id, mysqli $db) {
 		if($getprep = $db->prepare('select id, name, description from prep where id=? limit 1'))
@@ -36,7 +36,7 @@ class PrepApi extends Api {
 	 * Look up a prep row based on its name.
 	 * @param string $name Name of prep row to look up
 	 * @param mysqli $db Database connection
-	 * @return mixed Prep row with requested name, or false if not found
+	 * @return object|bool Prep row with requested name, or false if not found
 	 */
 	public static function fromName(string $name, mysqli $db) {
 		if($getprep = $db->prepare('select id, name, description from prep where name=? limit 1'))
@@ -140,6 +140,7 @@ class PrepApi extends Api {
 
 	/**
 	 * Update one or more prep properties.
+	 * @param array $params First value is the prep ID
 	 */
 	protected static function PATCH_id(array $params) {
 		if($id = trim(array_shift($params)))
@@ -172,6 +173,7 @@ class PrepApi extends Api {
 
 	/**
 	 * Replace an entire prep.
+	 * @param array $params First value is the prep ID
 	 */
 	protected static function PUT_id(array $params) {
 		if($id = trim(array_shift($params)))
