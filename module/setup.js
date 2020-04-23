@@ -239,8 +239,8 @@ grant all on \`{{stepData.name}}\`.* to '{{stepData.user}}'@'localhost' identifi
 			methods: {
 				Upgrade() {
 					this.working = true;
-					SetupApi.InstallDatabase().done(result => {
-						this.$emit("log-step", "Installed new database");
+					SetupApi.UpgradeDatabase().done(result => {
+						this.$emit("log-step", "Upgraded database");
 						this.$emit("set-level", { level: SetupLevel.DatabaseUpToDate, stepData: false });
 					}).fail(this.Error).always(() => {
 						this.working = false;
