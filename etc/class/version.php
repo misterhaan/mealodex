@@ -36,5 +36,6 @@ class StructureVersion {
  * @author misterhaan
  */
 class DataVersion {
+	const Recipes = 1;
 	const Empty = 0;
 }

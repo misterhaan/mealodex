@@ -96,13 +96,19 @@ class KeysDB {
 		// tables, views, routines; then alphabetical order.  if anything has
 		// dependencies that come later, it comes after its last dependency.
 		$files = [
-			'table/config', 'table/item', 'table/prep', 'table/recipe'
+			'table/config', 'table/item', 'table/prep', 'table/recipe',
+			'table/unit'
 		];
 		$db->autocommit(false);  // no partial database installations
 		foreach($files as $file)
 			self::RunQueryFile($file, $db);
 
 		if($db->real_query('insert into config (structureVersion) values (' . +Version::Structure . ')')) {
+			// data imports are handled by functions once the structure has been set up
+			self::ImportUnits($db);
+
+			self::SetDataVersion(Version::Data, $db);
+
 			$db->commit();
 			self::Success();
 		} else
@@ -123,12 +129,31 @@ class KeysDB {
 	}
 
 	/**
+	 * Import unit definitions into the database.  Part of POST_installDatabase().
+	 * @param mysqli $db Database connection object.
+	 */
+	private static function ImportUnits(mysqli $db) {
+		if(false !== $f = fopen(dirname(__DIR__) . '/etc/db/data/units.csv', 'r'))
+			if($ins = $db->prepare('insert into unit (measure, abbr, name, factor) select * from (select ? as measure, ? as abbr, ? as name, ? as factor) as b where not exists (select id from unit where measure=? and (abbr=? or name=?)) limit 1'))
+				if($ins->bind_param('issiiss', $measure, $abbr, $name, $factor, $measure, $abbr, $name)) {
+					while(list($measure, $abbr, $name, $factor) = fgetcsv($f))
+						if(!$ins->execute())
+							self::DatabaseError('Error importing unit', $ins);
+				} else
+					self::DatabaseError('Error binding unit import parameters', $ins);
+			else
+				self::DatabaseError('Database error preparing to import units', $db);
+		else
+			self::DatabaseError('Unable to read units data file.');
+	}
+
+	/**
 	 * Upgrade database structure and update the structure version.
 	 * @param mysqli $db Database connection object.
 	 */
 	private static function UpgradeDatabaseStructure(mysqli $db) {
 		self::UpgradeDatabaseStructureStep(StructureVersion::Recipes, $db,
-			'table/item', 'table/prep', 'table/recipe'
+			'table/item', 'table/prep', 'table/recipe', 'table/unit'
 		);
 		// add future structure upgrades here (older ones need to go first)
 	}
@@ -138,6 +163,11 @@ class KeysDB {
 	 * @param mysqli $db Database connection object.
 	 */
 	private static function UpgradeDatabaseData(mysqli $db) {
+		if($db->config->dataVersion < DataVersion::Recipes) {
+			self::ImportUnits($db);
+			self::SetDataVersion(DataVersion::Recipes, $db);
+			$db->commit();
+		}
 		// add future data upgrades here (older ones need to go first)
 	}
 
@@ -189,6 +219,19 @@ class KeysDB {
 			$db->config->structureVersion = +$ver;
 		else
 			self::DatabaseError("Error setting structure version to $ver", $db);
+	}
+
+	/**
+	 * Sets the data version to the provided value.  Use this after making
+	 * database data upgrades.
+	 * @param int $ver Data version to set (use a constant from DataVersion)
+	 * @param mysqli $db Database connection object
+	 */
+	private static function SetDataVersion(int $ver, mysqli $db) {
+		if($db->real_query('update config set dataVersion=' . +$ver . ' limit 1'))
+			$db->config->dataVersion = +$ver;
+		else
+			self::DatabaseError("Error setting data version to $ver", $db);
 	}
 }
 SetupApi::Respond();
