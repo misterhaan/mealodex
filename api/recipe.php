@@ -157,7 +157,7 @@ class RecipeApi extends Api {
 		if($search = trim(array_shift($params))) {
 			if($db = self::RequireLatestDatabase())
 				if($select = $db->prepare('select id, name, lastServed, complexity from recipe where name like concat(\'%\',?,\'%\') order by not name like concat(?,\'%\'), name'))
-					if($geselectt->bind_param('ss', $search, $search))
+					if($select->bind_param('ss', $search, $search))
 						if($select->execute()) {
 							$recipe = new stdClass();
 							if($select->bind_result($recipe->id, $recipe->name, $recipe->lastServed, $recipe->complexity)) {
