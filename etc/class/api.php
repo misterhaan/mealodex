@@ -70,14 +70,21 @@ abstract class Api {
 	 */
 	protected static function RequireDatabaseWithConfig() {
 		$db = self::RequireDatabase();
-		if($config = $db->query('select * from config limit 1'))
-			if($config = $config->fetch_object()) {
-				$db->config = $config;
-				return $db;
+		if($select = $db->prepare('select structureVersion, dataVersion from config limit 1'))
+			if($select->execute()) {
+				$config = new stdClass();
+				if($select->bind_result($config->structureVersion, $config->dataVersion))
+					if($select->fetch()) {
+						$db->config = $config;
+						return $db;
+					} else
+					self::NeedSetup('Configuration not specified in database.');
+				else
+					self::NeedSetup('Error binding result from loading configuration', $select);
 			} else
-				self::NeedSetup('Configuration not specified in database.');
+				self::NeedSetup('Error loading configuration from database', $select);
 		else
-			self::NeedSetup('Error loading configuration from database.', $db);
+			self::NeedSetup('Error preparing to load configuration from database', $db);
 	}
 
 	/**
@@ -92,6 +99,21 @@ abstract class Api {
 			return $db;
 		else
 			self::NeedSetup('Database upgrade required.');
+	}
+
+	/**
+	 * Clones the provided object so we can add bound query results to an array
+	 * without all of them being the last result.  Not sure why the clone
+	 * operator doesn't work in that case but likely has to do with mysqli
+	 * bind_param.
+	 * @param object $o Data object to clone
+	 * @return object Cloned object
+	 */
+	protected static function CloneObject(object $o) {
+		$c = new stdClass();
+		foreach($o as $k => $v)
+			$c->$k = $v;
+		return $c;
 	}
 
 	/**
@@ -122,7 +144,10 @@ abstract class Api {
 		http_response_code(500);
 		header('Content-Type: text/plain');
 		if($dbObject)
-			$message .= ":  $dbObject->errno $dbObject->error";
+			if($dbObject->errno)
+				$message .= ":  $dbObject->errno $dbObject->error";
+			else  // errno 0 means there's no error on $dbObject so show the last error instead
+				$message .= ':  ' . error_get_last()['message'];
 		die($message);
 	}
 

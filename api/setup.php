@@ -31,19 +31,27 @@ class SetupApi extends Api {
 					];
 				else {
 					$result->level = -2;
-					$config = $db->query('select * from config limit 1');
-					if(!$config || !($config = $config->fetch_object()))
+					if($select = $db->prepare('select structureVersion, dataVersion from config limit 1'))
+						if($select->execute()) {
+							$config = new stdClass();
+							if($select->bind_result($config->structureVersion, $config->dataVersion))
+								if($select->fetch()) {
+									$result->level = -1;
+									if($config->structureVersion < Version::Structure || $config->dataVersion < Version::Data)
+										$result->stepData = [
+											"structureBehind" => Version::Structure - $config->structureVersion,
+											"dataBehind" => Version::Data - $config->dataVersion
+										];
+									else
+										$result->level = 0;
+								} else
+									$result->stepData = 'Configuration data missing';
+							else
+								$result->stepData = $select->errno . ' ' . $select->error;
+						} else
+							$result->stepData = $select->errno . ' ' . $select->error;
+					else
 						$result->stepData = $db->errno . ' ' . $db->error;
-					else {
-						$result->level = -1;
-						if($config->structureVersion < Version::Structure || $config->dataVersion < Version::Data)
-							$result->stepData = [
-								"structureBehind" => Version::Structure - $config->structureVersion,
-								"dataBehind" => Version::Data - $config->dataVersion
-							];
-						else
-							$result->level = 0;
-					}
 				}
 			}
 		}

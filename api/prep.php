@@ -13,22 +13,23 @@ class PrepApi extends Api {
 	 * @return object|bool Prep row with requested ID, or false if not found
 	 */
 	public static function fromID(int $id, mysqli $db) {
-		if($getprep = $db->prepare('select id, name, description from prep where id=? limit 1'))
-			if($getprep->bind_param('i', $id))
-				if($getprep->execute())
-					if($prep = $getprep->get_result())
-						if($prep = $prep->fetch_object())
+		if($select = $db->prepare('select id, name, description from prep where id=? limit 1'))
+			if($select->bind_param('i', $id))
+				if($select->execute()) {
+					$prep = new stdClass();
+					if($select->bind_result($prep->id, $prep->name, $prep->description))
+						if($select->fetch())
 							return $prep;
 						else
 							return false;
 					else
-						self::DatabaseError('Error getting result from prep lookup', $getprep);
-				else
-					self::DatabaseError('Error executing prep lookup', $getprep);
+						self::DatabaseError('Error binding result from prep lookup', $select);
+				} else
+					self::DatabaseError('Error executing prep lookup', $select);
 			else
-				self::DatabaseError('Error binding parameters to look up prep', $getprep);
+				self::DatabaseError('Error binding parameters to look up prep', $select);
 		else
-			self::DatabaseError('Error preparing to look up prep', $getprep);
+			self::DatabaseError('Error preparing to look up prep', $db);
 		return false;
 	}
 
@@ -39,22 +40,23 @@ class PrepApi extends Api {
 	 * @return object|bool Prep row with requested name, or false if not found
 	 */
 	public static function fromName(string $name, mysqli $db) {
-		if($getprep = $db->prepare('select id, name, description from prep where name=? limit 1'))
-			if($getprep->bind_param('s', $name))
-				if($getprep->execute())
-					if($prep = $getprep->get_result())
-						if($prep = $prep->fetch_object())
+		if($select = $db->prepare('select id, name, description from prep where name=? limit 1'))
+			if($select->bind_param('s', $name))
+				if($select->execute()) {
+					$prep = new stdClass();
+					if($select->bind_result($prep->id, $prep->name, $prep->description))
+						if($select->fetch())
 							return $prep;
 						else
 							return false;
 					else
-						self::DatabaseError('Error getting result from prep lookup', $getprep);
-				else
-					self::DatabaseError('Error executing prep lookup', $getprep);
+						self::DatabaseError('Error binding result from prep lookup', $select);
+				} else
+					self::DatabaseError('Error executing prep lookup', $select);
 			else
-				self::DatabaseError('Error binding parameters to look up prep', $getprep);
+				self::DatabaseError('Error binding parameters to look up prep', $select);
 		else
-			self::DatabaseError('Error preparing to look up prep', $getprep);
+			self::DatabaseError('Error preparing to look up prep', $db);
 		return false;
 	}
 
@@ -101,13 +103,20 @@ class PrepApi extends Api {
 	 */
 	protected static function GET_list() {
 		if($db = self::RequireLatestDatabase())
-			if($prepResult = $db->query('select id, name, description from prep order by name')) {
-				$preps = [];
-				while($prep = $prepResult->fetch_object())
-					$preps[] = $prep;
-				self::Success($preps);
-			} else
-				self::DatabaseError('Error looking up preps', $db);
+			if($select = $db->prepare('select id, name, description from prep order by name'))
+				if($select->execute()) {
+					$prep = new stdClass();
+					if($select->bind_result($prep->id, $prep->name, $prep->description)) {
+						$preps = [];
+						while($select->fetch())
+							$preps[] = self::CloneObject($prep);
+						self::Success($preps);
+					} else
+						self::DatabaseError('Error binding result from looking up preps', $select);
+				} else
+					self::DatabaseError('Error looking up preps', $select);
+			else
+				self::DatabaseError('Error preparing to look up preps', $db);
 	}
 
 	/**

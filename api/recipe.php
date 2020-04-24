@@ -15,15 +15,16 @@ class RecipeApi extends Api {
 	public static function fromID(int $id, mysqli $db) {
 		if($select = $db->prepare('select id, name, lastServed, complexity, servings, instructions from recipe where id=? limit 1'))
 			if($select->bind_param('i', $id))
-				if($select->execute())
-					if($recipe = $select->get_result())
-						if($recipe = $recipe->fetch_object()) {
+				if($select->execute()) {
+					$recipe = new stdClass();
+					if($select->bind_result($recipe->id, $recipe->name, $recipe->lastServed, $recipe->complexity, $recipe->servings, $recipe->instructions))
+						if($select->fetch())
 							return $recipe;
-						} else
+						else
 							return false;
 					else
-						self::DatabaseError('Error getting result from recipe lookup', $select);
-				else
+						self::DatabaseError('Error binding result from recipe lookup', $select);
+				} else
 					self::DatabaseError('Error executing recipe lookup', $select);
 			else
 				self::DatabaseError('Error binding parameters to look up recipe', $select);
@@ -132,13 +133,20 @@ class RecipeApi extends Api {
 	 */
 	protected static function GET_list() {
 		if($db = self::RequireLatestDatabase())
-			if($result = $db->query('select id, name, lastServed, complexity from recipe order by name')) {
-				$recipes = [];
-				while($recipe = $result->fetch_object())
-					$recipes[] = $recipe;
-				self::Success($recipes);
-			} else
-				self::DatabaseError('Error looking up recipes', $db);
+			if($select = $db->prepare('select id, name, lastServed, complexity from recipe order by name'))
+				if($select->execute()) {
+					$recipe = new stdClass();
+					if($select->bind_result($recipe->id, $recipe->name, $recipe->lastServed, $recipe->complexity)) {
+						$recipes = [];
+						while($select->fetch())
+							$recipes[] = self::CloneObject($recipe);
+						self::Success($recipes);
+					} else
+						self::DatabaseError('Error binding results from looking up recipes', $select);
+				} else
+					self::DatabaseError('Error looking up recipes', $select);
+			else
+				self::DatabaseError('Error preparing to look up recipes', $db);
 	}
 
 	/**
@@ -148,20 +156,21 @@ class RecipeApi extends Api {
 	protected static function GET_search(array $params) {
 		if($search = trim(array_shift($params))) {
 			if($db = self::RequireLatestDatabase())
-				if($get = $db->prepare('select id, name, lastServed, complexity from recipe where name like concat(\'%\',?,\'%\') order by not name like concat(?,\'%\'), name'))
-					if($get->bind_param('ss', $search, $search))
-						if($get->execute())
-							if($result = $get->get_result()) {
+				if($select = $db->prepare('select id, name, lastServed, complexity from recipe where name like concat(\'%\',?,\'%\') order by not name like concat(?,\'%\'), name'))
+					if($geselectt->bind_param('ss', $search, $search))
+						if($select->execute()) {
+							$recipe = new stdClass();
+							if($select->bind_result($recipe->id, $recipe->name, $recipe->lastServed, $recipe->complexity)) {
 								$recipes = [];
-								while($recipe = $result->fetch_object())
-									$recipes[] = $recipe;
+								while($select->fetch())
+									$recipes[] = self::CloneObject($recipe);
 								self::Success($recipes);
 							} else
-								self::DatabaseError('Error getting result from recipe search', $get);
-						else
-							self::DatabaseError('Error searching recipes', $get);
+								self::DatabaseError('Error binding results from recipe search', $select);
+						} else
+							self::DatabaseError('Error searching recipes', $select);
 					else
-						self::DatabaseError('Error binding parameters to search recipes', $get);
+						self::DatabaseError('Error binding parameters to search recipes', $select);
 				else
 					self::DatabaseError('Error preparing to search recipes', $db);
 		} else

@@ -13,21 +13,21 @@ class ItemApi extends Api {
 	 * @return object|bool Item row with requested ID, or false if not found
 	 */
 	public static function fromID(int $id, mysqli $db) {
-		if($getitem = $db->prepare('select name from item where id=? limit 1'))
-			if($getitem->bind_param('i', $id))
-				if($getitem->execute())
-					if($item = $getitem->get_result())
-						if($item = $item->fetch_object()) {
-							$item->id = $id;
+		if($select = $db->prepare('select id, name from item where id=? limit 1'))
+			if($select->bind_param('i', $id))
+				if($select->execute()) {
+					$item = new stdClass();
+					if($select->bind_result($item->id, $item->name))
+						if($select->fetch())
 							return $item;
-						} else
+						else
 							return false;
 					else
-						self::DatabaseError('Error getting result from item lookup', $getitem);
-				else
-					self::DatabaseError('Error executing item lookup', $getitem);
+						self::DatabaseError('Error binding item lookup result', $select);
+				} else
+					self::DatabaseError('Error executing item lookup', $select);
 			else
-				self::DatabaseError('Error binding parameters to look up item', $getitem);
+				self::DatabaseError('Error binding parameters to look up item', $select);
 		else
 			self::DatabaseError('Error preparing to look up item', $db);
 		return false;
@@ -40,22 +40,23 @@ class ItemApi extends Api {
 	 * @return object|bool Item row with requested name, or false if not found
 	 */
 	public static function fromName(string $name, mysqli $db) {
-		if($getitem = $db->prepare('select id, name from item where name=? limit 1'))
-			if($getitem->bind_param('s', $name))
-				if($getitem->execute())
-					if($item = $getitem->get_result())
-						if($item = $item->fetch_object())
+		if($select = $db->prepare('select id, name from item where name=? limit 1'))
+			if($select->bind_param('s', $name))
+				if($select->execute()) {
+					$item = new stdClass();
+					if($select->bind_result($item->id, $item->name))
+						if($select->fetch())
 							return $item;
 						else
 							return false;
 					else
-						self::DatabaseError('Error getting result from item lookup', $getitem);
-				else
-					self::DatabaseError('Error executing item lookup', $getitem);
+						self::DatabaseError('Error getting result from item lookup', $select);
+				} else
+					self::DatabaseError('Error executing item lookup', $select);
 			else
-				self::DatabaseError('Error binding parameters to look up item', $getitem);
+				self::DatabaseError('Error binding parameters to look up item', $select);
 		else
-			self::DatabaseError('Error preparing to look up item', $getitem);
+			self::DatabaseError('Error preparing to look up item', $db);
 		return false;
 	}
 
@@ -64,13 +65,20 @@ class ItemApi extends Api {
 	 */
 	protected static function GET_list() {
 		if($db = self::RequireLatestDatabase())
-			if($itemResult = $db->query('select id, name from item order by name')) {
-				$items = [];
-				while($item = $itemResult->fetch_object())
-					$items[] = $item;
-				self::Success($items);
-			} else
-				self::DatabaseError('Error looking up items', $db);
+			if($select = $db->prepare('select id, name from item order by name'))
+				if($select->execute()) {
+					$item = new stdClass();
+					if($select->bind_result($item->id, $item->name)) {
+						$items = [];
+						while($select->fetch())
+							$items[] = self::CloneObject($item);
+						self::Success($items);
+					} else
+						self::DatabaseError('Error binding item lookup results', $select);
+				} else
+					self::DatabaseError('Error looking up items', $select);
+			else
+				self::DatabaseError('Error preparing to look up items', $db);
 	}
 
 	/**
