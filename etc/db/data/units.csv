@@ -1,9 +1,14 @@
+0,,0
+0,,can,0
+0,,bag,0
+0,,box,0
+0,pkg,package,0
 1,tsp,teaspoon,1
 1,tbsp,tablespoon,3
-1,floz,fluid ounce,6
-1,cup,cup,48
-1,pint,pint,96
-1,quart,quart,192
+1,oz,fluid ounce,6
+1,,cup,48
+1,,pint,96
+1,qt,quart,192
 1,gal,gallon,768
 2,oz,ounce,1
 2,lb,pound,16
