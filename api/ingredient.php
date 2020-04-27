@@ -60,7 +60,7 @@ class IngredientApi extends Api {
 					if($ingredients = json_decode($json))
 						if(is_array($ingredients)) {
 							if($db = self::RequireLatestDatabase()) {
-								$db->auto_commit(false);
+								$db->autocommit(false);
 								if($del = $db->prepare('delete from ingredient where recipe=?'))
 									if($del->bind_param('i', $recipe))
 										if($del->execute())
