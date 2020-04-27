@@ -22,7 +22,7 @@ export default class IngredientApi extends ApiBase {
 	 * @returns {Promise<IngredientRow[]>} Ingredients of the requested recipe
 	 */
 	static GetRecipe(recipe) {
-		return super.GET(`${urlBase}recipe/${recipe}`);
+		return super.GET(`${urlbase}recipe/${recipe}`);
 	}
 
 	/**
@@ -32,6 +32,6 @@ export default class IngredientApi extends ApiBase {
 	 * @returns {Promise<IngredientRow[]>}
 	 */
 	static AddRecipe(recipe, ingredients) {
-		return super.Put(`${urlBase}recipe/${recipe}`, JSON.stringify(ingredients));
+		return super.Put(`${urlbase}recipe/${recipe}`, JSON.stringify(ingredients));
 	}
 }

@@ -19,7 +19,7 @@ export default class PrepApi extends ApiBase {
 	 * @returns {Promise<PrepRow[]>} Preps sorted by name
 	 */
 	static List() {
-		return super.GET(urlBase + "list");
+		return super.GET(urlbase + "list");
 	}
 
 	/**

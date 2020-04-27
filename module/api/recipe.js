@@ -22,7 +22,7 @@ export default class RecipeApi extends ApiBase {
 	 * @returns {Promise<RecipeRow[]>} Recipes sorted by name (without instructions)
 	 */
 	static List() {
-		return super.GET(urlBase + "list");
+		return super.GET(urlbase + "list");
 	}
 
 	/**
@@ -31,7 +31,7 @@ export default class RecipeApi extends ApiBase {
 	 * @returns {Promise<RecipeRow[]>} Matching Recipes sorted by name (without instructions)
 	 */
 	static Search(searchText) {
-		return super.GET(`${urlBase}search/${encodeURIComponent(searchText)}`);
+		return super.GET(`${urlbase}search/${encodeURIComponent(searchText)}`);
 	}
 
 	/**
@@ -52,7 +52,7 @@ export default class RecipeApi extends ApiBase {
 	 * @returns {Promise<RecipeRow>} Recipe added, or existing recipe with matching name
 	 */
 	static Add(name, complexity, servings, instructions) {
-		return super.POST(urlBase + "add", {
+		return super.POST(urlbase + "add", {
 			name: name,
 			complexity: complexity,
 			servings: servings,
@@ -67,7 +67,7 @@ export default class RecipeApi extends ApiBase {
 	 * @returns {Promise<RecipeRow>} Recipe updated with the new last served time
 	 */
 	static Serve(id, served) {
-		return super.POST(`${urlBase}serve/${id}`, { served: served });
+		return super.POST(`${urlbase}serve/${id}`, { served: served });
 	}
 
 	/**

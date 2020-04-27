@@ -18,7 +18,7 @@ export default class ItemApi extends ApiBase {
 	 * @returns {Promise<ItemRow[]>} Items sorted by name
 	 */
 	static List() {
-		return super.GET(urlBase + "list");
+		return super.GET(urlbase + "list");
 	}
 
 	/**

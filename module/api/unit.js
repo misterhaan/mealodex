@@ -21,6 +21,6 @@ export default class UnitApi extends ApiBase {
 	 * @returns {Promise<UnitRow[]>} Units sorted by measure and size
 	 */
 	static List() {
-		return super.GET(urlBase + "list");
+		return super.GET(urlbase + "list");
 	}
 }
