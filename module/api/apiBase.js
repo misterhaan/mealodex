@@ -55,7 +55,7 @@ export default class ApiBase {
 		}).then(
 			result => result,
 			request => {
-				if(request.status == 503 && request.statusText == "Setup Needed" && !location.includes("setup.html"))
+				if(request.status == 503 && request.statusText == "Setup Needed" && !location.href.includes("setup.html"))
 					location = "setup.html";
 				const error = new Error(
 					request.getResponseHeader("Content-Type").split(";")[0] == "text/plain"
