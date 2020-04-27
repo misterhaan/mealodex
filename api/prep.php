@@ -1,5 +1,6 @@
 <?php
 require_once dirname(__DIR__) . '/etc/class/api.php';
+require_once dirname(__DIR__) . '/etc/class/row/row.php';
 
 /**
  * Handler for prep API requests.
@@ -16,7 +17,7 @@ class PrepApi extends Api {
 		if($select = $db->prepare('select id, name, description from prep where id=? limit 1'))
 			if($select->bind_param('i', $id))
 				if($select->execute()) {
-					$prep = new stdClass();
+					$prep = new Row();
 					if($select->bind_result($prep->id, $prep->name, $prep->description))
 						if($select->fetch())
 							return $prep;
@@ -43,7 +44,7 @@ class PrepApi extends Api {
 		if($select = $db->prepare('select id, name, description from prep where name=? limit 1'))
 			if($select->bind_param('s', $name))
 				if($select->execute()) {
-					$prep = new stdClass();
+					$prep = new Row();
 					if($select->bind_result($prep->id, $prep->name, $prep->description))
 						if($select->fetch())
 							return $prep;
@@ -105,11 +106,11 @@ class PrepApi extends Api {
 		if($db = self::RequireLatestDatabase())
 			if($select = $db->prepare('select id, name, description from prep order by name'))
 				if($select->execute()) {
-					$prep = new stdClass();
+					$prep = new Row();
 					if($select->bind_result($prep->id, $prep->name, $prep->description)) {
 						$preps = [];
 						while($select->fetch())
-							$preps[] = self::CloneObject($prep);
+							$preps[] = $prep->dupe();
 						self::Success($preps);
 					} else
 						self::DatabaseError('Error binding result from looking up preps', $select);

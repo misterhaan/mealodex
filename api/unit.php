@@ -1,5 +1,6 @@
 <?php
 require_once dirname(__DIR__) . '/etc/class/api.php';
+require_once dirname(__DIR__) . '/etc/class/row/row.php';
 
 /**
  * Handler for unit API requests.
@@ -13,13 +14,11 @@ class UnitApi extends Api {
 		if($db = self::RequireLatestDatabase())
 			if($list = $db->prepare('select id, measure, abbr, name, factor from unit order by measure, factor'))
 				if($list->execute()) {
-					$unit = new stdClass();
+					$unit = new Row();
 					if($list->bind_result($unit->id, $unit->measure, $unit->abbr, $unit->name, $unit->factor)) {
 						$units = [];
-						while($list->fetch()) {
-
-							$units[] = self::CloneObject($unit);
-						}
+						while($list->fetch())
+							$units[] = $unit->dupe();
 						self::Success($units);
 					} else
 						self::DatabaseError('Error binding unit list result', $list);

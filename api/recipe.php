@@ -1,5 +1,6 @@
 <?php
 require_once dirname(__DIR__) . '/etc/class/api.php';
+require_once dirname(__DIR__) . '/etc/class/row/row.php';
 
 /**
  * Handler for recipe API requests.
@@ -16,7 +17,7 @@ class RecipeApi extends Api {
 		if($select = $db->prepare('select id, name, lastServed, complexity, servings, instructions from recipe where id=? limit 1'))
 			if($select->bind_param('i', $id))
 				if($select->execute()) {
-					$recipe = new stdClass();
+					$recipe = new Row();
 					if($select->bind_result($recipe->id, $recipe->name, $recipe->lastServed, $recipe->complexity, $recipe->servings, $recipe->instructions))
 						if($select->fetch())
 							return $recipe;
@@ -135,11 +136,11 @@ class RecipeApi extends Api {
 		if($db = self::RequireLatestDatabase())
 			if($select = $db->prepare('select id, name, lastServed, complexity from recipe order by name'))
 				if($select->execute()) {
-					$recipe = new stdClass();
+					$recipe = new Row();
 					if($select->bind_result($recipe->id, $recipe->name, $recipe->lastServed, $recipe->complexity)) {
 						$recipes = [];
 						while($select->fetch())
-							$recipes[] = self::CloneObject($recipe);
+							$recipes[] = $recipe->dupe();
 						self::Success($recipes);
 					} else
 						self::DatabaseError('Error binding results from looking up recipes', $select);
@@ -159,11 +160,11 @@ class RecipeApi extends Api {
 				if($select = $db->prepare('select id, name, lastServed, complexity from recipe where name like concat(\'%\',?,\'%\') order by not name like concat(?,\'%\'), name'))
 					if($select->bind_param('ss', $search, $search))
 						if($select->execute()) {
-							$recipe = new stdClass();
+							$recipe = new Row();
 							if($select->bind_result($recipe->id, $recipe->name, $recipe->lastServed, $recipe->complexity)) {
 								$recipes = [];
 								while($select->fetch())
-									$recipes[] = self::CloneObject($recipe);
+									$recipes[] = $recipe->dupe();
 								self::Success($recipes);
 							} else
 								self::DatabaseError('Error binding results from recipe search', $select);

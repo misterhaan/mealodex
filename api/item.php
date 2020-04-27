@@ -1,5 +1,6 @@
 <?php
 require_once dirname(__DIR__) . '/etc/class/api.php';
+require_once dirname(__DIR__) . '/etc/class/row/row.php';
 
 /**
  * Handler for item API requests.
@@ -16,7 +17,7 @@ class ItemApi extends Api {
 		if($select = $db->prepare('select id, name from item where id=? limit 1'))
 			if($select->bind_param('i', $id))
 				if($select->execute()) {
-					$item = new stdClass();
+					$item = new Row();
 					if($select->bind_result($item->id, $item->name))
 						if($select->fetch())
 							return $item;
@@ -43,7 +44,7 @@ class ItemApi extends Api {
 		if($select = $db->prepare('select id, name from item where name=? limit 1'))
 			if($select->bind_param('s', $name))
 				if($select->execute()) {
-					$item = new stdClass();
+					$item = new Row();
 					if($select->bind_result($item->id, $item->name))
 						if($select->fetch())
 							return $item;
@@ -67,11 +68,11 @@ class ItemApi extends Api {
 		if($db = self::RequireLatestDatabase())
 			if($select = $db->prepare('select id, name from item order by name'))
 				if($select->execute()) {
-					$item = new stdClass();
+					$item = new Row();
 					if($select->bind_result($item->id, $item->name)) {
 						$items = [];
 						while($select->fetch())
-							$items[] = self::CloneObject($item);
+							$items[] = $item->dupe();
 						self::Success($items);
 					} else
 						self::DatabaseError('Error binding item lookup results', $select);

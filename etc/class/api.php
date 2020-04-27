@@ -102,21 +102,6 @@ abstract class Api {
 	}
 
 	/**
-	 * Clones the provided object so we can add bound query results to an array
-	 * without all of them being the last result.  Not sure why the clone
-	 * operator doesn't work in that case but likely has to do with mysqli
-	 * bind_param.
-	 * @param object $o Data object to clone
-	 * @return object Cloned object
-	 */
-	protected static function CloneObject(object $o) {
-		$c = new stdClass();
-		foreach($o as $k => $v)
-			$c->$k = $v;
-		return $c;
-	}
-
-	/**
 	 * Send a successful response.
 	 * @param mixed $data Response data (optional)
 	 */
