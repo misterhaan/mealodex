@@ -7,6 +7,7 @@ class Row {
 	 * Duplicate this row so that the next row can be loaded from the database
 	 * without overwriting this one because the php clone operator doesn't work
 	 * here.
+	 * @return Row Duplicate of the current Row object
 	 */
 	public function dupe() {
 		$d = new static();
