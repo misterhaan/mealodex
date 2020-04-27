@@ -134,11 +134,16 @@ class KeysDB {
 	 */
 	private static function ImportUnits(mysqli $db) {
 		if(false !== $f = fopen(dirname(__DIR__) . '/etc/db/data/units.csv', 'r'))
-			if($ins = $db->prepare('insert into unit (measure, abbr, name, factor) select * from (select ? as measure, ? as abbr, ? as name, ? as factor) as b where not exists (select id from unit where measure=? and (abbr=? or name=?)) limit 1'))
-				if($ins->bind_param('issiiss', $measure, $abbr, $name, $factor, $measure, $abbr, $name)) {
-					while(list($measure, $abbr, $name, $factor) = fgetcsv($f))
+			if($ins = $db->prepare('insert into unit (measure, abbr, name, factor) select * from (select ? as measure, ? as abbr, ? as name, ? as factor) as b where not exists (select id from unit where measure=? and name=?) limit 1'))
+				if($ins->bind_param('issiis', $measure, $abbr, $name, $factor, $measure, $name)) {
+					while($line = fgetcsv($f)) {
+						$measure = $line[0];
+						$abbr = $line[1];
+						$name = $line[2];
+						$factor = $line[3];
 						if(!$ins->execute())
 							self::DatabaseError('Error importing unit', $ins);
+					}
 				} else
 					self::DatabaseError('Error binding unit import parameters', $ins);
 			else
