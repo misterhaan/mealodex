@@ -9,13 +9,13 @@ class Version {
 	 * the setup script in upgrade mode.
 	 * @var integer
 	 */
-	const Structure = StructureVersion::Empty;
+	const Structure = StructureVersion::Recipes;
 	/**
 	 * Database data (rows) version.  Changing this triggers the setup script in
 	 * update mode.
 	 * @var integer
 	 */
-	const Data = DataVersion::Empty;
+	const Data = DataVersion::Recipes;
 }
 
 /**
