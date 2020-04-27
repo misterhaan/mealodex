@@ -1,0 +1,18 @@
+.facts {
+	margin: 5px 10px 10px;
+	padding: 0 5px;
+	background-color: $ltgrey;
+	border-radius: $gentlecorner;
+	font-size: .8em;
+	list-style-type: none;
+	li {
+		display: inline;
+		margin-right: 10px;
+		&:before {
+			@include fa-label;
+		}
+		&:last-child {
+			margin-right: 0;
+		}
+	}
+}

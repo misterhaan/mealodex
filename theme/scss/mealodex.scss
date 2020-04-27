@@ -21,8 +21,11 @@ h1 {
 	margin: 5px 10px;
 }
 
-p {
+p, ul {
 	margin: 10px 20px;
+}
+ul {
+	padding: 0 0 0 20px;
 }
 
 .loading:before,
@@ -41,5 +44,7 @@ p {
 @import "!statusbar";
 @import "!icons";
 @import "!forms";
+
+@import "recipe";
 
 @import "setup";

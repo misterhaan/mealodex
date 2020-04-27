@@ -5,6 +5,7 @@ import TitleBar from "./component/titlebar.js";
 import StatusBar from "./component/statusbar.js";
 import Views from "./views.js";
 import Home from "./component/home.js";
+import Recipe from "./component/recipe.js";
 
 new Vue({
 	el: "#mealodex",
@@ -89,7 +90,8 @@ new Vue({
 	components: {
 		titlebar: TitleBar,
 		statusbar: StatusBar,
-		[Views.Home.Name]: Home
+		[Views.Home.Name]: Home,
+		[Views.Recipe.Name]: Recipe
 	},
 	template: /*html*/ `
 		<div id=mealodex>
