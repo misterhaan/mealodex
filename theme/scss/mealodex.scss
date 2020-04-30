@@ -40,6 +40,35 @@ ul {
 	margin-left: 5px;
 }
 
+.suggestions {
+	position: absolute;
+	padding: 0;
+	right: 10px;
+	top: 9px;
+	background-color: $purple;
+	box-shadow: 2px 2px 1px $dkgrey;
+	border-radius: 0 0 $gentlecorner $gentlecorner;
+	list-style-type: none;
+	li {
+		background-color: $ltgrey;
+		color: $black;
+		padding: 2px 5px;
+		margin: 1px;
+		&:last-child {
+			border-radius: 0 0 $gentlecorner $gentlecorner;
+		}
+		&:hover,
+		&.cursor {
+			background-color: $blue;
+			color: $white;
+		}
+		em {
+			font-weight: bold;
+			font-style: normal;
+		}
+	}
+}
+
 @import "!titlebar";
 @import "!statusbar";
 @import "!icons";

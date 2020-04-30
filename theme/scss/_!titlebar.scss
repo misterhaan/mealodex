@@ -22,3 +22,33 @@
 	font-size: .9em;
 	margin: 0 18px 0 7px;
 }
+
+#recipesearch {
+	@include flex-container-center;
+	margin-left: auto;
+	input {
+		border: none;
+		background-color: transparent;
+		color: inherit;
+		width: .01px;
+		margin-left: auto;
+		font-size: .8em;
+		text-align: right;
+	}
+	&:after {
+		@include fontawesome;
+		content: '\f002';
+		font-size: .8em;
+		padding: 0 2px 2px 0;
+		margin-left: 6px;
+	}
+	&:focus-within {
+		@include flex-item-fill;
+		input {
+			@include flex-item-fill;
+		}
+	}
+	&:hover input {
+		width: 110px;
+	}
+}

@@ -95,7 +95,7 @@ new Vue({
 	},
 	template: /*html*/ `
 		<div id=mealodex>
-			<titlebar></titlebar>
+			<titlebar @error="error = $event"></titlebar>
 			<component :is=view.Name :view=subView :params=params @error="error = $event"></component>
 			<statusbar :last-error=error></statusbar>
 		</div>
