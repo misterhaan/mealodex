@@ -1,5 +1,4 @@
 import AppName from "../appName.js";
-import "../../external/jquery-3.4.1.min.js";
 
 let toastTimeout = false;
 
