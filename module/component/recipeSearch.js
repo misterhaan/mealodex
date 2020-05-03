@@ -1,16 +1,8 @@
 import ReportError from "../reportError.js";
 import RecipeApi from "../api/recipe.js";
+import HighlightString from "../highlightString.js";
 
 const BlurDelay = 250;
-
-function HighlightString(str, search) {
-	const html = $("<div/>").text(str).html();
-	return search ? html.replace(new RegExp("(" + EscapeRegExp(search) + ")", "ig"), "<em>$1</em>") : html;
-}
-
-function EscapeRegExp(str) {
-	return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-}
 
 export default {
 	data() {
