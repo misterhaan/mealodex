@@ -17,15 +17,17 @@
 	width: 20px;
 	height: 20px;
 	display: inline-block;
+	cursor: pointer;
 }
 #sitetitle {
 	font-size: .9em;
 	margin: 0 18px 0 7px;
+	cursor: pointer;
 }
 
 #recipesearch {
 	@include flex-container-center;
-	margin-left: auto;
+	margin: 0 0 0 auto;
 	input {
 		border: none;
 		background-color: transparent;
@@ -50,5 +52,10 @@
 	}
 	&:hover input {
 		width: 110px;
+	}
+	.suggestions {
+		right: 10px;
+		top: 9px;
+		background-color: $purple;
 	}
 }

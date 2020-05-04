@@ -1,3 +1,10 @@
+article.recipe header {
+	@include flex-container-center;
+	button {
+		@include icon-button;
+	}
+}
+
 .facts {
 	margin: 5px 10px 10px;
 	padding: 0 5px;
@@ -14,5 +21,39 @@
 		&:last-child {
 			margin-right: 0;
 		}
+	}
+}
+.ingredients {
+	list-style-type: none;
+	padding: 0;
+	margin-bottom: 25px;
+	> li {
+		margin: 10px 0;
+	}
+}
+.editfacts .label {
+	@include flex-item-fixed(117px);
+}
+.amount {
+	width: 64px;
+	@include flex-item-fixed;
+}
+.unit {
+	@include flex-item-fixed;
+}
+.item {
+	@include flex-item-fill(3);
+	@include flex-container-center;
+	input {
+		@include flex-item-fill;
+		width: 64px;
+	}
+}
+.prep {
+	@include flex-item-fill(2);
+	@include flex-container-center;
+	input {
+		@include flex-item-fill;
+		width: 64px;
 	}
 }

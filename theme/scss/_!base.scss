@@ -74,7 +74,6 @@ $gentlecorner: 3px;
 @mixin fa-label {
 	@include fontawesome;
 	font-size: .9em;
-	color: $dkgrey;
 	margin-right: 5px;
 }
 @mixin fa-replaced {
@@ -83,9 +82,21 @@ $gentlecorner: 3px;
 	}
 	&:before {
 		@include fontawesome;
+		margin-right: 0;
 	}
 }
-
+@mixin icon-button {
+	@include fa-replaced;
+	padding: 0;
+	margin: 0 5px;
+	width: 25px;
+	height: 25px;
+	text-align: center;
+	cursor: pointer;
+	&::-moz-focus-inner {  // hide dotted line focus border in firefox
+		border: 0;
+	}
+}
 
 @mixin flex-container {
 	display: -webkit-flex;
@@ -111,7 +122,7 @@ $gentlecorner: 3px;
 	-webkit-flex: 0 0 $basis;
 	flex: 0 0 $basis;
 }
-@mixin flex-item-fill {
-	-webkit-flex: 1 1 auto;
-	flex: 1 1 auto;
+@mixin flex-item-fill($factor: 1) {
+	-webkit-flex: $factor $factor auto;
+	flex: $factor $factor auto;
 }

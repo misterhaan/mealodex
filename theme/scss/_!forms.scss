@@ -1,55 +1,105 @@
 // form styles for the Mealodex
 
-input, button {
+input, button, select, textarea {
 	font-family: inherit;
 	font-size: 1em;
 }
 input:not([type]),  // default type is text
 input[type=text],
-input[type=password] {
-	padding: 1px 5px 0;
-	border-width: 0 0 1px 0;
-	border-color: $medgrey;
+input[type=password],
+input[type=number] {
+	padding: 3px 5px;
+	height: 20px;
+	border: none;
+	border-bottom: 1px solid $medgrey;
+	background: transparent;
+	border-radius: 0;
 	&:focus {
-		border: none;
+		border-bottom: 3px solid $blue;
 		padding-bottom: 1px;
-		margin-bottom: 0;
+		outline: none;
+	}
+}
+select {
+	padding: 1px 5px 5px;  // needs to be 2px higher than th inputs
+	height: 27px;  // this actually works out to 20?  maybe it includes padding and border
+	border: none;
+	border-bottom: 1px solid $medgrey;
+	border-radius: 0;
+	background: transparent;
+	&:focus {
+		border-bottom: 3px solid $blue;
+		padding-bottom: 3px;
+		outline: none;
+	}
+}
+input[type=number] {
+	padding-right: 0;
+	text-align: right;
+}
+textarea {
+	@include flex-item-fill;
+	padding: 1px 5px 0 7px;
+	border: none;
+	border-left: 1px solid $medgrey;
+	border-radius: 0;
+	background: transparent;
+	&:focus {
+		border-left: 3px solid $blue;
+		padding-left: 5px;
+		outline: none;
+	}
+}
+button {
+	color: $dkgrey;
+	background: transparent;
+	border: none;
+	&:before {
+		@include fa-label;
+	}
+	&:hover,
+	&:focus {
+		color: $blue;
 		background-color: $ltgrey;
 		border-radius: $gentlecorner;
 	}
 }
 
-.singlelinefields label {
-	@include flex-container-baseline;
+label {
 	margin: 5px 20px;
-	input {
+}
+h1, ul {
+	label {
+		margin: 0;
+	}
+}
+
+.multifield label {
+	@include flex-container-center;
+}
+
+.singlelinefields label,
+label.singlelinefields {
+	@include flex-container-baseline;
+	input,
+	select {
 		@include flex-item-fill;
 	}
-	button {
-		@include fa-replaced;
-		color: $dkgrey;
-		padding: 0;
-		border: none;
-		background: transparent;
-		margin: 0 5px;
-		width: 25px;
-		height: 25px;
-		text-align: center;
-		cursor: pointer;
-		&:last-child {
-			margin-right: 0;
-		}
-		&:hover {
-			color: $blue;
-		}
-		&:focus {
-			background-color: $ltgrey;
-			border-radius: $gentlecorner;
-		}
-		&::-moz-focus-inner {  // hide dotted line focus border in firefox
-			border: 0;
+}
+.multifield,
+.singlelinefields {
+	label {
+		button {
+			@include icon-button;
+			&:last-child {
+				margin-right: 0;
+			}
 		}
 	}
+}
+
+.suggestWithAdd li.add:before {
+	@include fa-label;
 }
 
 .calltoaction {
@@ -66,10 +116,17 @@ input[type=password] {
 		padding: 5px 15px;
 		margin: 10px;
 		cursor: pointer;
+		&:before {
+			@include fa-label;
+		}
 		&:focus,
 		&:hover {
 			background-color: $blue;
 			color: $white;
+			outline: none;
+			&:not(:disabled):before {
+				color: $white;
+			}
 		}
 		&:disabled {
 			--sqrt2: 1.4142135623730950488016887242097;
@@ -81,7 +138,10 @@ input[type=password] {
 				transparent calc(6px / var(--sqrt2))
 			);
 			color: $medgrey;
-			cursor: default;
+			cursor: not-allowed;
+			&:before {
+				color: $medgrey;
+			}
 		}
 	}
 }
