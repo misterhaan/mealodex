@@ -31,7 +31,7 @@ export default class IngredientApi extends ApiBase {
 	 * @param {IngredientRow[]} ingredients - All ingredients for the recipe
 	 * @returns {Promise<IngredientRow[]>}
 	 */
-	static AddRecipe(recipe, ingredients) {
-		return super.Put(`${urlbase}recipe/${recipe}`, JSON.stringify(ingredients));
+	static SaveRecipe(recipe, ingredients) {
+		return super.PUT(`${urlbase}recipe/${recipe}`, JSON.stringify(ingredients));
 	}
 }

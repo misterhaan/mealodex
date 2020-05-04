@@ -45,7 +45,7 @@ export default class ItemApi extends ApiBase {
 	 * @returns {Promise<ItemRow>} Item added, or existing item with matching name
 	 */
 	static Add(name) {
-		return super.POST(url, { name: name });
+		return super.POST(urlbase + "add", { name: name });
 	}
 
 	/**

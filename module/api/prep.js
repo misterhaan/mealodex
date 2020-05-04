@@ -29,7 +29,7 @@ export default class PrepApi extends ApiBase {
 	 * @returns {Promise<PrepRow>} Prep added, or existing prep with matching name
 	 */
 	static Add(name, description) {
-		return super.POST(url, { name: name, description: description });
+		return super.POST(urlbase + "add", { name: name, description: description });
 	}
 
 	/**
