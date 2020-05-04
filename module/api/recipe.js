@@ -44,6 +44,16 @@ export default class RecipeApi extends ApiBase {
 	}
 
 	/**
+	 * Check if a recipe name is already in use.
+	 * @param {string} name - Name to check
+	 * @param {number} id - ID of recipe that is allowed to use the name
+	 * @returns {object} .status invalid or valid and .message
+	 */
+	static CheckName(name, id) {
+		return super.GET(`${urlbase}checkName/${name}`, { id: id });
+	}
+
+	/**
 	 * Add a recipe to the Mealodex.
 	 * @param {string} name - Name of recipe to add
 	 * @param {number} complexity - Complexity level of this recipe, or 0 for unspecified

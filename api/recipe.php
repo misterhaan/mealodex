@@ -198,6 +198,38 @@ class RecipeApi extends Api {
 	}
 
 	/**
+	 * Check if a name is available for a recipe.  If the recipe is already in
+	 * the database, the optional id parameter should be specified with the
+	 * recipe ID to avoid saying the name isn't available because the same recipe
+	 * is already using it.
+	 * @param array $params First value is the name to check
+	 */
+	protected static function GET_checkName(array $params) {
+		if($name = trim(array_shift($params))) {
+			$id = isset($_GET['id']) && is_numeric($_GET['id']) ? +$_GET['id'] : 0;
+			$db = self::RequireLatestDatabase();
+			if($chk = $db->prepare('select id from recipe where name=? and not id=? limit 1'))
+				if($chk->bind_param('si', $name, $id))
+					if($chk->execute())
+						if($chk->bind_result($dupe))
+							if($chk->fetch())
+								self::Success(['status' => 'invalid', 'message' => "Already in use by recipe $dupe"]);
+							else
+								self::Success(['status' => 'valid', 'message' => 'Available']);
+						else
+							self::DatabaseError('Error binding result from duplicate name check', $chk);
+					else
+						self::DatabaseError('Error checking for duplicate name', $chk);
+				else
+					self::DatabaseError('Error binding parameters to check for duplicate name', $chk);
+			else
+				self::DatabaseError('Error preparing to check for duplicate name', $db);
+		}
+		else
+			self::Success(['status' => 'invalid', 'message' => 'Cannot be blank']);
+	}
+
+	/**
 	 * Add a recipe to the Mealodex.
 	 */
 	protected static function POST_add() {
