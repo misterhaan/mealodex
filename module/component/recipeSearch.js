@@ -2,8 +2,6 @@ import ReportError from "../reportError.js";
 import RecipeApi from "../api/recipe.js";
 import HighlightString from "../highlightString.js";
 
-const BlurDelay = 250;
-
 export default {
 	data() {
 		return {
@@ -42,7 +40,7 @@ export default {
 			this.showSuggestions = true;
 		},
 		SearchBlur() {
-			setTimeout(this.HideSuggestions, BlurDelay);
+			this.HideSuggestions;
 		},
 		HideSuggestions(event) {
 			if(this.showSuggestions) {
@@ -102,7 +100,7 @@ export default {
 				@keydown.enter.stop=ViewRecipe(cursor) maxlength=64>
 			<ol class=suggestions v-if=showSuggestions>
 				<li class=choice v-for="recipe in recipeSuggestions" v-html=recipe.name
-					:class="{cursor: recipe.id == cursor}" @click.prevent=ViewRecipe(recipe.id)></li>
+					:class="{cursor: recipe.id == cursor}" @mousedown.prevent=ViewRecipe(recipe.id)></li>
 			</ol>
 		</label>
 	`
