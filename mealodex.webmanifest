@@ -1,5 +1,6 @@
 {
 	"background_color": "#72a",
+	"theme_color": "#72a",
 	"description": "Organize your recipes in the Mealodex",
 	"display": "standalone",
 	"name": "The Mealodex",
