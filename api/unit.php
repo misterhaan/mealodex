@@ -7,17 +7,17 @@ require_once dirname(__DIR__) . '/etc/class/row/row.php';
  * @author misterhaan
  */
 class UnitApi extends Api {
-		/**
+	/**
 	 * List all units the Mealodex knows about.
 	 */
-	protected static function GET_list() {
-		if($db = self::RequireLatestDatabase())
-			if($list = $db->prepare('select id, measure, abbr, name, factor from unit order by measure, factor'))
-				if($list->execute()) {
+	protected static function GET_list(): void {
+		if ($db = self::RequireLatestDatabase())
+			if ($list = $db->prepare('select id, measure, abbr, name, factor from unit order by measure, factor'))
+				if ($list->execute()) {
 					$unit = new Row();
-					if($list->bind_result($unit->id, $unit->measure, $unit->abbr, $unit->name, $unit->factor)) {
+					if ($list->bind_result($unit->id, $unit->measure, $unit->abbr, $unit->name, $unit->factor)) {
 						$units = [];
-						while($list->fetch())
+						while ($list->fetch())
 							$units[] = $unit->dupe();
 						self::Success($units);
 					} else

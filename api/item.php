@@ -13,13 +13,13 @@ class ItemApi extends Api {
 	 * @param mysqli $db Database connection
 	 * @return object|bool Item row with requested ID, or false if not found
 	 */
-	public static function fromID(int $id, mysqli $db) {
-		if($select = $db->prepare('select id, name from item where id=? limit 1'))
-			if($select->bind_param('i', $id))
-				if($select->execute()) {
+	public static function fromID(int $id, mysqli $db): mixed {
+		if ($select = $db->prepare('select id, name from item where id=? limit 1'))
+			if ($select->bind_param('i', $id))
+				if ($select->execute()) {
 					$item = new Row();
-					if($select->bind_result($item->id, $item->name))
-						if($select->fetch())
+					if ($select->bind_result($item->id, $item->name))
+						if ($select->fetch())
 							return $item;
 						else
 							return false;
@@ -40,13 +40,13 @@ class ItemApi extends Api {
 	 * @param mysqli $db Database connection
 	 * @return object|bool Item row with requested name, or false if not found
 	 */
-	public static function fromName(string $name, mysqli $db) {
-		if($select = $db->prepare('select id, name from item where name=? limit 1'))
-			if($select->bind_param('s', $name))
-				if($select->execute()) {
+	public static function fromName(string $name, mysqli $db): mixed {
+		if ($select = $db->prepare('select id, name from item where name=? limit 1'))
+			if ($select->bind_param('s', $name))
+				if ($select->execute()) {
 					$item = new Row();
-					if($select->bind_result($item->id, $item->name))
-						if($select->fetch())
+					if ($select->bind_result($item->id, $item->name))
+						if ($select->fetch())
 							return $item;
 						else
 							return false;
@@ -64,14 +64,14 @@ class ItemApi extends Api {
 	/**
 	 * List all items the Mealodex knows about.
 	 */
-	protected static function GET_list() {
-		if($db = self::RequireLatestDatabase())
-			if($select = $db->prepare('select id, name from item order by name'))
-				if($select->execute()) {
+	protected static function GET_list(): void {
+		if ($db = self::RequireLatestDatabase())
+			if ($select = $db->prepare('select id, name from item order by name'))
+				if ($select->execute()) {
 					$item = new Row();
-					if($select->bind_result($item->id, $item->name)) {
+					if ($select->bind_result($item->id, $item->name)) {
 						$items = [];
-						while($select->fetch())
+						while ($select->fetch())
 							$items[] = $item->dupe();
 						self::Success($items);
 					} else
@@ -86,12 +86,12 @@ class ItemApi extends Api {
 	 * Look up an item by ID.
 	 * @param array $params First value is the item ID
 	 */
-	protected static function GET_id(array $params) {
-		if($id = trim(array_shift($params)))
-			if(is_numeric($id)) {
+	protected static function GET_id(array $params): void {
+		if ($id = trim(array_shift($params)))
+			if (is_numeric($id)) {
 				$id = +$id;
-				if($db = self::RequireLatestDatabase())
-					if($item = self::fromID($id, $db))
+				if ($db = self::RequireLatestDatabase())
+					if ($item = self::fromID($id, $db))
 						self::Success($item);
 					else
 						self::NotFound("No item at ID $id.");
@@ -105,10 +105,10 @@ class ItemApi extends Api {
 	 * Look up an item by name.
 	 * @param array $params First value is the item name
 	 */
-	protected static function GET_name(array $params) {
-		if($name = trim(array_shift($params))) {
-			if($db = self::RequireLatestDatabase())
-				if($item = self::fromName($name, $db))
+	protected static function GET_name(array $params): void {
+		if ($name = trim(array_shift($params))) {
+			if ($db = self::RequireLatestDatabase())
+				if ($item = self::fromName($name, $db))
 					self::Success($item);
 				else
 					self::NotFound("No item named $name.");
@@ -119,17 +119,17 @@ class ItemApi extends Api {
 	/**
 	 * Add an item to the Mealodex.
 	 */
-	protected static function POST_add() {
-		if(isset($_POST['name']) && $name = trim($_POST['name'])) {
-			if($db = self::RequireLatestDatabase())
-				if($item = self::fromName($name, $db))
+	protected static function POST_add(): void {
+		if (isset($_POST['name']) && $name = trim($_POST['name'])) {
+			if ($db = self::RequireLatestDatabase())
+				if ($item = self::fromName($name, $db))
 					self::Success($item);
-				elseif($putitem = $db->prepare('insert into item (name) values (?)'))
-					if($putitem->bind_param('s', $name))
-						if($putitem->execute()) {
+				elseif ($putitem = $db->prepare('insert into item (name) values (?)'))
+					if ($putitem->bind_param('s', $name))
+						if ($putitem->execute()) {
 							$id = $db->insert_id;
 							$putitem->close();
-							if($item = self::fromID($id, $db))
+							if ($item = self::fromID($id, $db))
 								self::Success($item);
 							else
 								self::NotFound("Unable to look up item by ID $id after adding as $name.");
@@ -147,7 +147,7 @@ class ItemApi extends Api {
 	 * Update one or more item properties.
 	 * @param array $params First value is the item id
 	 */
-	protected static function PATCH_id(array $params) {
+	protected static function PATCH_id(array $params): void {
 		// since there's only one property to update it's either all or nothing
 		self::PUT_id($params);
 	}
@@ -156,17 +156,17 @@ class ItemApi extends Api {
 	 * Replace an entire item.
 	 * @param array $params First value is the item id
 	 */
-	protected static function PUT_id(array $params) {
-		if($id = trim(array_shift($params)))
-			if(is_numeric($id)) {
+	protected static function PUT_id(array $params): void {
+		if ($id = trim(array_shift($params)))
+			if (is_numeric($id)) {
 				$id = +$id;
 				parse_str(file_get_contents("php://input"), $_PUT);
-				if(isset($_PUT['name']) && $name = trim($_PUT['name'])) {
-					if($db = self::RequireLatestDatabase())
-						if($update = $db->prepare('update item set name=? where id=? limit 1'))
-							if($update->bind_param('si', $name, $id))
-								if($update->execute())
-									if($item = self::fromID($id, $db))
+				if (isset($_PUT['name']) && $name = trim($_PUT['name'])) {
+					if ($db = self::RequireLatestDatabase())
+						if ($update = $db->prepare('update item set name=? where id=? limit 1'))
+							if ($update->bind_param('si', $name, $id))
+								if ($update->execute())
+									if ($item = self::fromID($id, $db))
 										self::Success($item);
 									else
 										self::NotFound("Unable to replace item ID $id because it could not be found.");

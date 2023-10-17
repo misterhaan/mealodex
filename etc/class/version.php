@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Version information for the Mealodex
  * @author misterhaan
@@ -7,13 +8,13 @@ class Version {
 	/**
 	 * Database structure (tables and routines) version.  Changing this triggers
 	 * the setup script in upgrade mode.
-	 * @var integer
+	 * @var int
 	 */
 	const Structure = StructureVersion::Recipes;
 	/**
 	 * Database data (rows) version.  Changing this triggers the setup script in
 	 * update mode.
-	 * @var integer
+	 * @var int
 	 */
 	const Data = DataVersion::Recipes;
 }

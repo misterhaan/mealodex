@@ -8,19 +8,20 @@ class IngredientRow extends Row {
 	private const Tolerance = .05;
 
 	private static $fractions = [
-		['value' => 1/4, 'display' => '¼'],
-		['value' => 1/3, 'display' => '⅓'],
-		['value' => 1/2, 'display' => '½'],
-		['value' => 2/3, 'display' => '⅔'],
-		['value' => 3/4, 'display' => '¾'],
+		['value' => 1 / 4, 'display' => '¼'],
+		['value' => 1 / 3, 'display' => '⅓'],
+		['value' => 1 / 2, 'display' => '½'],
+		['value' => 2 / 3, 'display' => '⅔'],
+		['value' => 3 / 4, 'display' => '¾'],
 		['value' => 1, 'display' => '']
 	];
 
 	public $sort;
-	public $item;
+	public Row $item;
 	public $amount;
-	public $unit;
-	public $prep;
+	public Row $unit;
+	public Row $prep;
+	public string $displayAmount;
 
 	/**
 	 * Initialize linked rows.
@@ -37,7 +38,7 @@ class IngredientRow extends Row {
 	 * doesn't work here.  Also sets the display amount.
 	 * @return IngredientRow Duplicate of the current IngredientRow object
 	 */
-	public function dupe() {
+	public function dupe(): static {
 		$d = parent::dupe();
 		$d->displayAmount = $this->getDisplayAmount();
 		return $d;
@@ -52,19 +53,19 @@ class IngredientRow extends Row {
 		$whole = floor($this->amount);
 		$fraction = $this->amount - $whole;
 
-		if(!$whole)
+		if (!$whole)
 			$whole = '';
 
-		if(!$fraction)
+		if (!$fraction)
 			return $whole;
 
 		$prevFrac = ['value' => 0, 'display' => ''];
-		foreach(self::$fractions as $frac) {
-			if($fraction == $frac['value'])
+		foreach (self::$fractions as $frac) {
+			if ($fraction == $frac['value'])
 				return $whole . $frac['display'];
-			if($fraction < $frac['value'])
-				if($frac['value'] - $fraction < $fraction - $prevFrac['value'])
-					if($frac['display'])
+			if ($fraction < $frac['value'])
+				if ($frac['value'] - $fraction < $fraction - $prevFrac['value'])
+					if ($frac['display'])
 						return $whole . $frac['display'];
 					else
 						return $whole + 1;

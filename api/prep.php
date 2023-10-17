@@ -13,13 +13,13 @@ class PrepApi extends Api {
 	 * @param mysqli $db Database connection
 	 * @return object|bool Prep row with requested ID, or false if not found
 	 */
-	public static function fromID(int $id, mysqli $db) {
-		if($select = $db->prepare('select id, name, description from prep where id=? limit 1'))
-			if($select->bind_param('i', $id))
-				if($select->execute()) {
+	public static function fromID(int $id, mysqli $db): mixed {
+		if ($select = $db->prepare('select id, name, description from prep where id=? limit 1'))
+			if ($select->bind_param('i', $id))
+				if ($select->execute()) {
 					$prep = new Row();
-					if($select->bind_result($prep->id, $prep->name, $prep->description))
-						if($select->fetch())
+					if ($select->bind_result($prep->id, $prep->name, $prep->description))
+						if ($select->fetch())
 							return $prep;
 						else
 							return false;
@@ -40,13 +40,13 @@ class PrepApi extends Api {
 	 * @param mysqli $db Database connection
 	 * @return object|bool Prep row with requested name, or false if not found
 	 */
-	public static function fromName(string $name, mysqli $db) {
-		if($select = $db->prepare('select id, name, description from prep where name=? limit 1'))
-			if($select->bind_param('s', $name))
-				if($select->execute()) {
+	public static function fromName(string $name, mysqli $db): mixed {
+		if ($select = $db->prepare('select id, name, description from prep where name=? limit 1'))
+			if ($select->bind_param('s', $name))
+				if ($select->execute()) {
 					$prep = new Row();
-					if($select->bind_result($prep->id, $prep->name, $prep->description))
-						if($select->fetch())
+					if ($select->bind_result($prep->id, $prep->name, $prep->description))
+						if ($select->fetch())
 							return $prep;
 						else
 							return false;
@@ -67,10 +67,10 @@ class PrepApi extends Api {
 	 * @param string $name New name for the prep
 	 * @param mysqli $db Database connection
 	 */
-	public static function updateName(int $id, string $name, mysqli $db) {
-		if($update = $db->prepare('update prep set name=? where id=? limit 1'))
-			if($update->bind_param('si', $name, $id))
-				if($update->execute())
+	public static function updateName(int $id, string $name, mysqli $db): void {
+		if ($update = $db->prepare('update prep set name=? where id=? limit 1'))
+			if ($update->bind_param('si', $name, $id))
+				if ($update->execute())
 					$update->close();
 				else
 					self::DatabaseError('Error updating prep name', $update);
@@ -86,10 +86,10 @@ class PrepApi extends Api {
 	 * @param string $name New description for the prep
 	 * @param mysqli $db Database connection
 	 */
-	public static function updateDescription(int $id, string $description, mysqli $db) {
-		if($update = $db->prepare('update prep set description=? where id=? limit 1'))
-			if($update->bind_param('si', $description, $id))
-				if($update->execute())
+	public static function updateDescription(int $id, string $description, mysqli $db): void {
+		if ($update = $db->prepare('update prep set description=? where id=? limit 1'))
+			if ($update->bind_param('si', $description, $id))
+				if ($update->execute())
 					$update->close();
 				else
 					self::DatabaseError('Error updating prep description', $update);
@@ -99,17 +99,17 @@ class PrepApi extends Api {
 			self::DatabaseError('Error preparing to update prep description', $db);
 	}
 
-		/**
+	/**
 	 * List all preps the Mealodex knows about.
 	 */
-	protected static function GET_list() {
-		if($db = self::RequireLatestDatabase())
-			if($select = $db->prepare('select id, name, description from prep order by name'))
-				if($select->execute()) {
+	protected static function GET_list(): void {
+		if ($db = self::RequireLatestDatabase())
+			if ($select = $db->prepare('select id, name, description from prep order by name'))
+				if ($select->execute()) {
 					$prep = new Row();
-					if($select->bind_result($prep->id, $prep->name, $prep->description)) {
+					if ($select->bind_result($prep->id, $prep->name, $prep->description)) {
 						$preps = [];
-						while($select->fetch())
+						while ($select->fetch())
 							$preps[] = $prep->dupe();
 						self::Success($preps);
 					} else
@@ -123,18 +123,18 @@ class PrepApi extends Api {
 	/**
 	 * Add a prep to the Mealodex.
 	 */
-	protected static function POST_add() {
-		if(isset($_POST['name']) && $name = trim($_POST['name'])) {
+	protected static function POST_add(): void {
+		if (isset($_POST['name']) && $name = trim($_POST['name'])) {
 			$description = isset($_POST['description']) ? trim($_POST['description']) : '';
-			if($db = self::RequireLatestDatabase())
-				if($prep = self::fromName($name, $db))
+			if ($db = self::RequireLatestDatabase())
+				if ($prep = self::fromName($name, $db))
 					self::Success($prep);
-				elseif($putprep = $db->prepare('insert into prep (name, description) values (?, ?)'))
-					if($putprep->bind_param('ss', $name, $description))
-						if($putprep->execute()) {
+				elseif ($putprep = $db->prepare('insert into prep (name, description) values (?, ?)'))
+					if ($putprep->bind_param('ss', $name, $description))
+						if ($putprep->execute()) {
 							$id = $db->insert_id;
 							$putprep->close();
-							if($prep = self::fromID($id, $db))
+							if ($prep = self::fromID($id, $db))
 								self::Success($prep);
 							else
 								self::NotFound("Unable to look up prep by ID $id after adding as $name.");
@@ -152,23 +152,23 @@ class PrepApi extends Api {
 	 * Update one or more prep properties.
 	 * @param array $params First value is the prep ID
 	 */
-	protected static function PATCH_id(array $params) {
-		if($id = trim(array_shift($params)))
-			if(is_numeric($id)) {
+	protected static function PATCH_id(array $params): void {
+		if ($id = trim(array_shift($params)))
+			if (is_numeric($id)) {
 				$id = +$id;
 				parse_str(file_get_contents("php://input"), $patch);
-				if(isset($patch['name']) || isset($patch['description'])) {
-					if($db = self::RequireLatestDatabase()) {
+				if (isset($patch['name']) || isset($patch['description'])) {
+					if ($db = self::RequireLatestDatabase()) {
 						$db->autocommit(false);  // in case we're updating multiple properties, make sure we get all of them
-						if(isset($patch['name']))
-							if($name = trim($patch['name']))
+						if (isset($patch['name']))
+							if ($name = trim($patch['name']))
 								self::updateName($id, $name, $db);
 							else
 								self::NeedMoreInfo('Name cannot be blank.  To update other fields but leave name as-is, do not specify the name property.');
-						if(isset($patch['description']))
+						if (isset($patch['description']))
 							self::updateDescription($id, $patch['description'], $db);
 						$db->commit();  // both updates succeeded, so safe to save the result
-						if($prep = self::fromID($id, $db))
+						if ($prep = self::fromID($id, $db))
 							self::Success($prep);
 						else
 							self::NotFound("Unable to update prep ID $id because it could not be found.");
@@ -185,18 +185,18 @@ class PrepApi extends Api {
 	 * Replace an entire prep.
 	 * @param array $params First value is the prep ID
 	 */
-	protected static function PUT_id(array $params) {
-		if($id = trim(array_shift($params)))
-			if(is_numeric($id)) {
+	protected static function PUT_id(array $params): void {
+		if ($id = trim(array_shift($params)))
+			if (is_numeric($id)) {
 				$id = +$id;
 				parse_str(file_get_contents("php://input"), $_PUT);
-				if(isset($_PUT['name'], $_PUT['description']) && $name = trim($_PUT['name'])) {
+				if (isset($_PUT['name'], $_PUT['description']) && $name = trim($_PUT['name'])) {
 					$description = trim($_PUT['description']);
-					if($db = self::RequireLatestDatabase())
-						if($update = $db->prepare('update prep set name=?, description=? where id=? limit 1'))
-							if($update->bind_param('ssi', $name, $description, $id))
-								if($update->execute())
-									if($prep = self::fromID($id, $db))
+					if ($db = self::RequireLatestDatabase())
+						if ($update = $db->prepare('update prep set name=?, description=? where id=? limit 1'))
+							if ($update->bind_param('ssi', $name, $description, $id))
+								if ($update->execute())
+									if ($prep = self::fromID($id, $db))
 										self::Success($prep);
 									else
 										self::NotFound("Unable to replace prep ID $id because it could not be found.");

@@ -4,9 +4,11 @@ require_once 'version.php';
 // CONTEXT_DOCUMENT_ROOT is set when an alias or similar is used, which makes
 // DOCUMENT_ROOT incorrect for this purpose.  assume the presence of an alias
 // means we're one level deep.
-define('DOCROOT', isset($_SERVER['CONTEXT_PREFIX']) && isset($_SERVER['CONTEXT_DOCUMENT_ROOT']) && $_SERVER['CONTEXT_PREFIX']
-	? dirname($_SERVER['CONTEXT_DOCUMENT_ROOT'])
-	: $_SERVER['DOCUMENT_ROOT']
+define(
+	'DOCROOT',
+	isset($_SERVER['CONTEXT_PREFIX']) && isset($_SERVER['CONTEXT_DOCUMENT_ROOT']) && $_SERVER['CONTEXT_PREFIX']
+		? dirname($_SERVER['CONTEXT_DOCUMENT_ROOT'])
+		: $_SERVER['DOCUMENT_ROOT']
 );
 
 // PHP should treat strings as UTF8
@@ -24,13 +26,13 @@ abstract class Api {
 	/**
 	 * Respond to an API request or show API documentation.
 	 */
-	public static function Respond() {
-		if(isset($_SERVER['PATH_INFO']) && substr($_SERVER['PATH_INFO'], 0, 1) == '/') {
+	public static function Respond(): void {
+		if (isset($_SERVER['PATH_INFO']) && substr($_SERVER['PATH_INFO'], 0, 1) == '/') {
 			$method = $_SERVER['REQUEST_METHOD'];
-			if(in_array($method, ['GET', 'POST', 'PUT', 'PATCH'])) {
+			if (in_array($method, ['GET', 'POST', 'PUT', 'PATCH'])) {
 				$params = explode('/', substr($_SERVER['PATH_INFO'], 1));
 				$method .= '_' . array_shift($params);  // turn the HTTP method and the endpoint into a php method name
-				if(method_exists(static::class, $method))
+				if (method_exists(static::class, $method))
 					static::$method($params);
 				else
 					self::NotFound('Requested endpoint does not exist on this controller or requires a different request method.');
@@ -46,17 +48,16 @@ abstract class Api {
 	 * RequireLatestDatabase instead.
 	 * @return mysqli Database connection object.
 	 */
-	protected static function RequireDatabase() {
-		if(@include_once dirname(DOCROOT) . '/.mdKeys.php') {
+	protected static function RequireDatabase(): mysqli {
+		if (@include_once dirname(DOCROOT) . '/.mdKeys.php') {
 			$db = @new mysqli(KeysDB::HOST, KeysDB::USER, KeysDB::PASS, KeysDB::NAME);
-			if(!$db->connect_errno) {
+			if (!$db->connect_errno) {
 				// it's probably okay to keep going if we can't set the character set
 				$db->real_query('set names \'utf8mb4\'');
 				$db->set_charset('utf8mb4');
 				return $db;
 			} else {
-				$db = false;
-				self::NeedSetup('Error connecting to database.', $db);
+				self::NeedSetup('Error connecting to database.');
 			}
 		} else
 			self::NeedSetup('Database connection details not specified.');
@@ -68,17 +69,17 @@ abstract class Api {
 	 * use RequireLatestDatabase instead.
 	 * @return mysqli Database connection object.
 	 */
-	protected static function RequireDatabaseWithConfig() {
+	protected static function RequireDatabaseWithConfig(): mysqli {
 		$db = self::RequireDatabase();
-		if($select = $db->prepare('select structureVersion, dataVersion from config limit 1'))
-			if($select->execute()) {
+		if ($select = $db->prepare('select structureVersion, dataVersion from config limit 1'))
+			if ($select->execute()) {
 				$config = new stdClass();
-				if($select->bind_result($config->structureVersion, $config->dataVersion))
-					if($select->fetch()) {
+				if ($select->bind_result($config->structureVersion, $config->dataVersion))
+					if ($select->fetch()) {
 						$db->config = $config;
 						return $db;
 					} else
-					self::NeedSetup('Configuration not specified in database.');
+						self::NeedSetup('Configuration not specified in database.');
 				else
 					self::NeedSetup('Error binding result from loading configuration', $select);
 			} else
@@ -93,9 +94,9 @@ abstract class Api {
 	 * returns at all, it's safe to use the database connection object.
 	 * @return mysqli Database connection object.
 	 */
-	protected static function RequireLatestDatabase() {
+	protected static function RequireLatestDatabase(): mysqli {
 		$db = self::RequireDatabaseWithConfig();
-		if($db->config->structureVersion >= Version::Structure && $db->config->dataVersion >= Version::Data)
+		if ($db->config->structureVersion >= Version::Structure && $db->config->dataVersion >= Version::Data)
 			return $db;
 		else
 			self::NeedSetup('Database upgrade required.');
@@ -123,13 +124,13 @@ abstract class Api {
 	/**
 	 * Mark the request as encountering a database error.
 	 * @param string $message failure reason
-	 * @param mysqli|mysqli_result $dbObject database object that threw this error (optional)
+	 * @param mysqli|mysqli_stmt $dbObject database object that threw this error (optional)
 	 */
 	protected static function DatabaseError(string $message, object $dbObject = null) {
 		http_response_code(500);
 		header('Content-Type: text/plain');
-		if($dbObject)
-			if($dbObject->errno)
+		if ($dbObject)
+			if ($dbObject->errno)
 				$message .= ":  $dbObject->errno $dbObject->error";
 			else  // errno 0 means there's no error on $dbObject so show the last error instead
 				$message .= ':  ' . error_get_last()['message'];
@@ -151,13 +152,13 @@ abstract class Api {
 	 * Return an error message and redirect to setup to perform any required
 	 * updates.  Stops execution of the current script.
 	 * @param string $message Error message to report.
-	 * @param mysqli|mysqli_result $dbObject database object that threw this error (optional)
+	 * @param mysqli|mysqli_stmt $dbObject database object that threw this error (optional)
 	 */
 	private static function NeedSetup(string $message, object $dbObject = null) {
 		$protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0';
 		header("$protocol 503 Setup Needed");
 		header('Content-Type: text/plain');
-		if($dbObject)
+		if ($dbObject)
 			$message .= ":  $dbObject->errno $dbObject->error";
 		die($message);
 	}
