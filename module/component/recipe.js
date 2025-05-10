@@ -250,13 +250,13 @@ export default {
 	},
 	directives: {
 		validation: {
-			bind(el, bind) {
+			created(el, bind) {
 				(ValidationElements.indexOf(el.nodeName.toLowerCase()) < 0
 					? $(el).find(ValidationElements.join(","))[0]
 					: el
 				).setCustomValidity(bind.value.valid ? "" : bind.value.message);
 			},
-			update(el, bind) {
+			updated(el, bind) {
 				(ValidationElements.indexOf(el.nodeName.toLowerCase()) < 0
 					? $(el).find(ValidationElements.join(","))[0]
 					: el

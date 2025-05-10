@@ -55,10 +55,10 @@ export default {
 	},
 	directives: {
 		toast: {
-			bind(el) {
+			created(el) {
 				$(el).hide();
 			},
-			update(el, bind, vnode) {
+			updated(el, bind) {
 				if(bind.value) {
 					if(toastTimeout) {
 						clearTimeout(toastTimeout);
@@ -67,9 +67,7 @@ export default {
 					$(el).fadeIn();
 					toastTimeout = setTimeout(() => {
 						toastTimeout = false;
-						$(el).fadeOut(1600, () => {
-							vnode.context[bind.expression] = false;
-						});
+						$(el).fadeOut(1600);
 					}, 5000);
 				} else
 					$(el).hide();
@@ -96,7 +94,7 @@ export default {
 				</ol>
 			</div>
 			<a id=errorcount :title="showErrors ? 'Minimize the error list' : 'Show the error list'" v-if=errors.length href=#showErrors @click.prevent=ToggleErrors>{{errors.length}}</a>
-			<div id=copyright>© 2020 ${AppName.Full}</div>
+			<div id=copyright>© 2020 - 2025 ${AppName.Full}</div>
 		</footer>
 `
 }

@@ -1,4 +1,4 @@
-import Vue from "../external/vue.esm.browser.min.js";
+import { createApp } from "../external/vue.esm-browser.prod.js";
 import AppName from "./appName.js";
 import TitleBar from "./component/titlebar.js";
 import StatusBar from "./component/statusbar.js";
@@ -6,13 +6,15 @@ import Views from "./views.js";
 import Home from "./component/home.js";
 import Recipe from "./component/recipe.js";
 
-new Vue({
-	el: "#mealodex",
-	data: {
-		view: Views.Home,
-		subView: false,
-		params: false,
-		error: false
+createApp({
+	name: "Mealodex",
+	data() {
+		return {
+			view: Views.Home,
+			subView: false,
+			params: false,
+			error: false
+		};
 	},
 	watch: {
 		view(val) {
@@ -86,12 +88,6 @@ new Vue({
 			}
 		}
 	},
-	components: {
-		titlebar: TitleBar,
-		statusbar: StatusBar,
-		[Views.Home.Name]: Home,
-		[Views.Recipe.Name]: Recipe
-	},
 	template: /*html*/ `
 		<div id=mealodex>
 			<titlebar @error="error = $event"></titlebar>
@@ -99,4 +95,8 @@ new Vue({
 			<statusbar :last-error=error></statusbar>
 		</div>
 `
-});
+}).component("titlebar", TitleBar)
+	.component("statusbar", StatusBar)
+	.component(Views.Home.Name, Home)
+	.component(Views.Recipe.Name, Recipe)
+	.mount("#mealodex");
