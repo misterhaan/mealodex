@@ -116,7 +116,8 @@ abstract class Api {
 	 * @param string $message short message describing what's missing and how to provide it.
 	 */
 	protected static function NeedMoreInfo(string $message) {
-		http_response_code(422);
+		$protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0';
+		header("$protocol 422 Unprocessable Content");
 		header('Content-Type: text/plain');
 		die($message);
 	}
@@ -126,7 +127,7 @@ abstract class Api {
 	 * @param string $message failure reason
 	 * @param mysqli|mysqli_stmt $dbObject database object that threw this error (optional)
 	 */
-	protected static function DatabaseError(string $message, object $dbObject = null) {
+	protected static function DatabaseError(string $message, ?object $dbObject = null) {
 		http_response_code(500);
 		header('Content-Type: text/plain');
 		if ($dbObject)
@@ -154,7 +155,7 @@ abstract class Api {
 	 * @param string $message Error message to report.
 	 * @param mysqli|mysqli_stmt $dbObject database object that threw this error (optional)
 	 */
-	private static function NeedSetup(string $message, object $dbObject = null) {
+	private static function NeedSetup(string $message, ?object $dbObject = null) {
 		$protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0';
 		header("$protocol 503 Setup Needed");
 		header('Content-Type: text/plain');
