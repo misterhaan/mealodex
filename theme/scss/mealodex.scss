@@ -11,19 +11,27 @@ body {
 	font-size: 1.25em;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
 	font-size: 1.1em;
 	font-family: Montserrat, sans-serif;
 	font-weight: normal;
 	margin: 20px 10px 5px;
 }
+
 h1 {
 	margin: 5px 10px;
 }
 
-p, ul {
+p,
+ul {
 	margin: 10px 20px;
 }
+
 ul {
 	padding: 0 0 0 20px;
 }
@@ -32,9 +40,9 @@ ul {
 .working:after {
 	@include fa-label;
 	content: "\f110";
-	-webkit-animation: fa-spin 1s infinite steps(8);
 	animation: fa-spin 1s infinite steps(8);
 }
+
 .working:after {
 	margin-right: 0;
 	margin-left: 5px;
@@ -43,32 +51,38 @@ ul {
 .suggestions {
 	position: absolute;
 	padding: 0;
-	z-index: 1;  // keep on top of fields
+	z-index: 1; // keep on top of fields
 	background-color: $black;
 	box-shadow: 2px 2px 1px $dkgrey;
 	border-radius: 0 0 $gentlecorner $gentlecorner;
 	list-style-type: none;
+
 	li {
 		background-color: $ltgrey;
 		color: $black;
 		padding: 2px 5px;
 		margin: 1px;
+
 		&:last-child {
 			border-radius: 0 0 $gentlecorner $gentlecorner;
 		}
+
 		&:hover,
 		&.cursor {
 			background-color: $blue;
 			color: $white;
 		}
+
 		em {
 			font-weight: bold;
 			font-style: normal;
 		}
 	}
 }
+
 .suggestWithAdd {
 	position: relative;
+
 	.suggestions {
 		top: 26px;
 	}

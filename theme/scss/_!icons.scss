@@ -2,32 +2,41 @@
 	content: "\f067";
 	color: $green;
 }
+
 .edit:before {
 	content: "\f040";
 }
+
 .save:before {
 	content: "\f00c";
 	color: $green;
 }
+
 .del:before {
 	content: "\f00d";
 }
+
 .del:hover:before,
 .del:focus:before {
 	color: $red;
 }
+
 .show:before {
 	content: "\f06e";
 }
+
 .hide:before {
 	content: "\f070";
 }
+
 .lastServed:before {
 	content: "\f0f5";
 }
+
 .complexity:before {
 	content: "\f017";
 }
+
 .serves:before {
 	content: "\f0c0";
 }
@@ -36,15 +45,17 @@
 	@include fontawesome;
 	margin-left: 5px;
 }
+
 .status.checking:after {
 	content: "\f110";
-	-webkit-animation: fa-spin 1s infinite steps(8);
 	animation: fa-spin 1s infinite steps(8);
 }
+
 .status.invalid:after {
 	content: "\f05e";
 	color: $red;
 }
+
 .status.valid:after {
 	content: "\f05d";
 	color: $green;

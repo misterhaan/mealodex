@@ -4,6 +4,7 @@ DirectoryIndex mealodex.html
 RewriteEngine on
 RewriteBase /mealodex/
 RewriteRule \.git/ - [F]
+RewriteRule \.vscode/ - [F]
 RewriteRule etc/ - [F]
 
 RewriteCond $0#%{REQUEST_URI} ([^#]*)#(.*)\1$
