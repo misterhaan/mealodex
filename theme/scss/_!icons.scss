@@ -1,6 +1,8 @@
+@use "!base" as md;
+
 .add:before {
 	content: "\f067";
-	color: $green;
+	color: md.$green;
 }
 
 .edit:before {
@@ -9,7 +11,7 @@
 
 .save:before {
 	content: "\f00c";
-	color: $green;
+	color: md.$green;
 }
 
 .del:before {
@@ -18,7 +20,7 @@
 
 .del:hover:before,
 .del:focus:before {
-	color: $red;
+	color: md.$red;
 }
 
 .show:before {
@@ -42,7 +44,7 @@
 }
 
 .status:after {
-	@include fontawesome;
+	@include md.fontawesome;
 	margin-left: 5px;
 }
 
@@ -53,10 +55,10 @@
 
 .status.invalid:after {
 	content: "\f05e";
-	color: $red;
+	color: md.$red;
 }
 
 .status.valid:after {
 	content: "\f05d";
-	color: $green;
+	color: md.$green;
 }

@@ -1,13 +1,15 @@
 // Title bar styles for the Mealodex
+@use "!base" as md;
+
 #mealodex {
-	@include flex-container-vertical;
+	@include md.flex-container-vertical;
 	min-height: 100vh;
 
-	& > header {
-		background-color: $purple;
-		color: $white;
-		@include flex-container-center;
-		@include flex-item-fixed;
+	&>header {
+		background-color: md.$purple;
+		color: md.$white;
+		@include md.flex-container-center;
+		@include md.flex-item-fixed;
 		padding: 0 5px;
 		height: 30px;
 	}
@@ -19,6 +21,7 @@
 	display: inline-block;
 	cursor: pointer;
 }
+
 #sitetitle {
 	font-size: .9em;
 	margin: 0 18px 0 7px;
@@ -26,8 +29,9 @@
 }
 
 #recipesearch {
-	@include flex-container-center;
+	@include md.flex-container-center;
 	margin: 0 0 0 auto;
+
 	input {
 		border: none;
 		background-color: transparent;
@@ -37,25 +41,30 @@
 		font-size: .8em;
 		text-align: right;
 	}
+
 	&:after {
-		@include fontawesome;
+		@include md.fontawesome;
 		content: '\f002';
 		font-size: .8em;
 		padding: 0 2px 2px 0;
 		margin-left: 6px;
 	}
+
 	&:focus-within {
-		@include flex-item-fill;
+		@include md.flex-item-fill;
+
 		input {
-			@include flex-item-fill;
+			@include md.flex-item-fill;
 		}
 	}
+
 	&:hover input {
 		width: 110px;
 	}
+
 	.suggestions {
 		right: 10px;
 		top: 9px;
-		background-color: $purple;
+		background-color: md.$purple;
 	}
 }

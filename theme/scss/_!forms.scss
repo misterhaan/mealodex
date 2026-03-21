@@ -1,96 +1,116 @@
 // form styles for the Mealodex
+@use "!base" as md;
 
-input, button, select, textarea {
+input,
+button,
+select,
+textarea {
 	font-family: inherit;
 	font-size: 1em;
 }
-input:not([type]),  // default type is text
+
+input:not([type]),
+// default type is text
 input[type=text],
 input[type=password],
 input[type=number] {
 	padding: 3px 5px;
 	height: 20px;
 	border: none;
-	border-bottom: 1px solid $medgrey;
+	border-bottom: 1px solid md.$medgrey;
 	background: transparent;
 	border-radius: 0;
+
 	&:focus {
-		border-bottom: 3px solid $blue;
+		border-bottom: 3px solid md.$blue;
 		padding-bottom: 1px;
 		outline: none;
 	}
 }
+
 select {
-	padding: 1px 5px 5px;  // needs to be 2px higher than th inputs
-	height: 27px;  // this actually works out to 20?  maybe it includes padding and border
+	padding: 1px 5px 5px; // needs to be 2px higher than th inputs
+	height: 27px; // this actually works out to 20?  maybe it includes padding and border
 	border: none;
-	border-bottom: 1px solid $medgrey;
+	border-bottom: 1px solid md.$medgrey;
 	border-radius: 0;
 	background: transparent;
+
 	&:focus {
-		border-bottom: 3px solid $blue;
+		border-bottom: 3px solid md.$blue;
 		padding-bottom: 3px;
 		outline: none;
 	}
 }
+
 input[type=number] {
 	padding-right: 0;
 	text-align: right;
 }
+
 textarea {
-	@include flex-item-fill;
+	@include md.flex-item-fill;
 	padding: 1px 5px 0 7px;
 	border: none;
-	border-left: 1px solid $medgrey;
+	border-left: 1px solid md.$medgrey;
 	border-radius: 0;
 	background: transparent;
+
 	&:focus {
-		border-left: 3px solid $blue;
+		border-left: 3px solid md.$blue;
 		padding-left: 5px;
 		outline: none;
 	}
 }
+
 button {
-	color: $dkgrey;
+	color: md.$dkgrey;
 	background: transparent;
 	border: none;
+
 	&:before {
-		@include fa-label;
+		@include md.fa-label;
 	}
+
 	&:hover,
 	&:focus {
-		color: $blue;
-		background-color: $ltgrey;
-		border-radius: $gentlecorner;
+		color: md.$blue;
+		background-color: md.$ltgrey;
+		border-radius: md.$gentlecorner;
 	}
 }
 
 label {
 	margin: 5px 20px;
 }
-h1, ul {
+
+h1,
+ul {
 	label {
 		margin: 0;
 	}
 }
 
 .multifield label {
-	@include flex-container-center;
+	@include md.flex-container-center;
 }
 
 .singlelinefields label,
 label.singlelinefields {
-	@include flex-container-baseline;
+	@include md.flex-container-baseline;
+
 	input,
 	select {
-		@include flex-item-fill;
+		@include md.flex-item-fill;
 	}
 }
+
 .multifield,
 .singlelinefields {
 	label {
 		button {
-			@include icon-button;
+			@include md.icon-button;
+
 			&:last-child {
 				margin-right: 0;
 			}
@@ -99,48 +119,52 @@ label.singlelinefields {
 }
 
 .suggestWithAdd li.add:before {
-	@include fa-label;
+	@include md.fa-label;
 }
 
 .calltoaction {
 	text-align: center;
+
 	a,
 	button {
 		display: inline-block;
 		white-space: nowrap;
 		text-decoration: none;
-		border-radius: $gentlecorner;
-		background-color: $ltgrey;
-		color: $black;
+		border-radius: md.$gentlecorner;
+		background-color: md.$ltgrey;
+		color: md.$black;
 		border: none;
 		padding: 5px 15px;
 		margin: 10px;
 		cursor: pointer;
+
 		&:before {
-			@include fa-label;
+			@include md.fa-label;
 		}
+
 		&:focus,
 		&:hover {
-			background-color: $blue;
-			color: $white;
+			background-color: md.$blue;
+			color: md.$white;
 			outline: none;
+
 			&:not(:disabled):before {
-				color: $white;
+				color: md.$white;
 			}
 		}
+
 		&:disabled {
 			--sqrt2: 1.4142135623730950488016887242097;
-			background: repeating-linear-gradient(
-				45deg,
-				$ltgrey,
-				$ltgrey calc(3px / var(--sqrt2)),
-				transparent calc(3px / var(--sqrt2)),
-				transparent calc(6px / var(--sqrt2))
-			);
-			color: $medgrey;
+			background: repeating-linear-gradient(45deg,
+					md.$ltgrey,
+					md.$ltgrey calc(3px / var(--sqrt2)),
+					transparent calc(3px / var(--sqrt2)),
+					transparent calc(6px / var(--sqrt2)));
+			color: md.$medgrey;
 			cursor: not-allowed;
+
 			&:before {
-				color: $medgrey;
+				color: md.$medgrey;
 			}
 		}
 	}

@@ -1,0 +1,89 @@
+// general styles for all of the Mealodex.
+@use "!base" as md;
+
+body {
+	padding: 0;
+	margin: 0;
+	-moz-text-size-adjust: none;
+	-webkit-text-size-adjust: 100%;
+	font-family: Lato, sans-serif;
+	font-size: 1.25em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-size: 1.1em;
+	font-family: Montserrat, sans-serif;
+	font-weight: normal;
+	margin: 20px 10px 5px;
+}
+
+h1 {
+	margin: 5px 10px;
+}
+
+p,
+ul,
+pre {
+	margin: 10px 20px;
+}
+
+ul {
+	padding: 0 0 0 20px;
+}
+
+.loading:before,
+.working:after {
+	@include md.fa-label;
+	content: "\f110";
+	animation: fa-spin 1s infinite steps(8);
+}
+
+.working:after {
+	margin-right: 0;
+	margin-left: 5px;
+}
+
+.suggestions {
+	position: absolute;
+	padding: 0;
+	z-index: 1; // keep on top of fields
+	background-color: md.$black;
+	box-shadow: 2px 2px 1px md.$dkgrey;
+	border-radius: 0 0 md.$gentlecorner md.$gentlecorner;
+	list-style-type: none;
+
+	li {
+		background-color: md.$ltgrey;
+		color: md.$black;
+		padding: 2px 5px;
+		margin: 1px;
+
+		&:last-child {
+			border-radius: 0 0 md.$gentlecorner md.$gentlecorner;
+		}
+
+		&:hover,
+		&.cursor {
+			background-color: md.$blue;
+			color: md.$white;
+		}
+
+		em {
+			font-weight: bold;
+			font-style: normal;
+		}
+	}
+}
+
+.suggestWithAdd {
+	position: relative;
+
+	.suggestions {
+		top: 26px;
+	}
+}
